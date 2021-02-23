@@ -11,7 +11,7 @@
  -- Event handlers are reserve words; can be set to a function: onclick, onselect
  */
 var stylize = (style, elem) => domify(style, '_style', elem ? elem : document.body);
-var domifyP5 = (foo, bar, atElem) => domifyP5(foo, bar, true);
+var domifyP5 = (foo, bar, atElem) => domify(foo, bar, atElem, true);
 var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from a js obj or json/uri; supports p5.
   if ([null, undefined].includes(foo) || ['_tag', '_id', 'onready', 'onReady', 'onelement'].includes(bar)) return;
   if (typeof foo === 'string' && foo.endsWith('.json')) return loadJSON(foo, data => domify(data, bar, atElem));
