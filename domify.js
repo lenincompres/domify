@@ -1,7 +1,7 @@
 /*
- ** domify makes html elements from a JS object (or JSON)
+ ** domify  makes html elements from a JS object (or JSON)
  ** created by: Lenin Compres
- ** requires the auxiliary.js file
+ ** it requires the auxiliary.js library
  */
 var stylize = (style, elem) => domify(style, '_style', elem ? elem : document.body);
 var domifyP5 = (foo, bar, atElem) => domify(foo, bar, atElem, true);
@@ -54,7 +54,11 @@ var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from 
   id = foo._id ? foo._id : !TAGGED ? bar : id;
   if (id && isNaN(id)) { // adds elem to dom; ignores number ids
     var [unid, i] = [id, 1];
-    while (window.dom[unid]) unid = id + i++; // if element exists adds a number after the name
+    while (window.dom[unid]) {
+      console.log(`The id "${unid}" already exists in the DOM (dom object).`);
+      unid = id + i++;
+      console.log(`The id "${unid}" was created instead.`);
+    } // if element exists adds a number after the name
     if (!IS_ARRAY) elem && isP5 ? elem.id(unid.camelCase('-')) : elem.setAttribute('id', unid.camelCase('-'));
     window.dom[unid] = elem;
   }
