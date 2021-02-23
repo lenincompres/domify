@@ -37,17 +37,14 @@ var rgb = (c, asObj) => {
 OBJECTS
 --------------------------------*/
 
-Object.prototype.map = function (f) {
+Object.prototype.forIn = function (f) {
+  if(typeof this === 'function' || typeof this === 'string' || Array.isArray(this)) return;
   let arr = [];
   for(let key in this){
     let obj = this[key];
-    if(obj && typeof obj === 'object') arr.push(f(obj, key));
+    if(typeof obj !== 'function') arr.push(f(obj, key));
   }
   return arr;
-}
-
-Object.prototype.forEach = function (f) {
-  this.map(f);
 }
 
 /*------------------------------
@@ -112,20 +109,22 @@ Array.prototype.random = function(){
 /*------------------------------
 JSON
 ------------------------------*/
-var loadJSON = (url, data, onsuccess, onerror = _ => null) => {
-  if (!onsuccess) {
+var loadJSON = (url, data, onsuccess = _ => null, onerror = _ => null) => {
+  const GET = data === false;
+  if (typeof data === 'function') {
+    onerror = onsuccess;
     onsuccess = data;
-    data = false;
+    data = {};
   }
   var xobj = new XMLHttpRequest();
   xobj.onreadystatechange = _ => xobj.readyState == 4 && xobj.status == '200' ? onsuccess(JSON.parse(xobj.responseText)) : onerror(xobj.responseText);
-  xobj.open(data ? 'POST' : 'GET', url, true);
+  xobj.open(GET ? 'POST' : 'GET', url, true);
   xobj.send(data);
 }
 
 var getJSON = (url, data, callback, errorback) => {
   if(!data || typeof data === 'function') return loadJSON(url, false, data, callback);
-  loadJSON(url + '?' + Object.keys(data).map(key => `${key}=${data[key]}`).join('&'), callback, errorback);
+  loadJSON(url + '?' + data.forIn((val, key) => `${key}=${val}`).join('&'), false, callback, errorback);
 };
 
 
