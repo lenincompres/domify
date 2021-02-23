@@ -38,13 +38,7 @@ OBJECTS
 --------------------------------*/
 
 Object.prototype.forIn = function (f) {
-  if(typeof this === 'function' || typeof this === 'string' || Array.isArray(this)) return;
-  let arr = [];
-  for(let key in this){
-    let obj = this[key];
-    if(typeof obj !== 'function') arr.push(f(obj, key));
-  }
-  return arr;
+  return Object.keys(this).map(key => f(this[key], key));
 }
 
 /*------------------------------
