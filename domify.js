@@ -1,14 +1,7 @@
 /*
- ** domify  makes html elements from a JS object (or JSON)
+ ** domify makes html elements from a JS object (or JSON)
  ** created by: Lenin Compres
- ** it requires the auxiliary.js library
- ** TIPS:
- -- Elements can be named: tag_idName_className_anotherClass
- -- idName becomes the name of the object in the dom object: dom.idName
- -- Create several objects of the same tag with an array: { li: [...], ...}
- -- CamelCase classes and ids get turned into dashed-names in the HTML
- -- Propeties that start with undercore _ are attributes
- -- Event handlers are reserve words; can be set to a function: onclick, onselect
+ ** requires the auxiliary.js file
  */
 var stylize = (style, elem) => domify(style, '_style', elem ? elem : document.body);
 var domifyP5 = (foo, bar, atElem) => domify(foo, bar, atElem, true);
