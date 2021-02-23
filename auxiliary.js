@@ -123,7 +123,10 @@ var loadJSON = (url, data, onsuccess, onerror = _ => null) => {
   xobj.send(data);
 }
 
-var getJSON = (url, data, callback, errorback) => loadJSON(url + '?' + Object.keys(data).map(key => `${key}=${data[key]}`).join('&'), callback, errorback);
+var getJSON = (url, data, callback, errorback) => {
+  if(!data || typeof data === 'function') return loadJSON(url, false, data, callback);
+  loadJSON(url + '?' + Object.keys(data).map(key => `${key}=${data[key]}`).join('&'), callback, errorback);
+};
 
 
 /*---------------------------------- 
