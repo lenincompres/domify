@@ -1,5 +1,7 @@
 # domify
+by Lenin Compres
 
+The *domify* function creates DOM elements from a provided JS object
 
  ## Domify tips:
  - Elements can be named: *tag_id_class1_class2*
