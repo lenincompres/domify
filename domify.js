@@ -18,7 +18,7 @@ var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from 
   if (!window.dom) window.dom = {}; // creates dom obj to hold id'ed elems
   if (bar && (isP5 ? bar.elt : bar.tagName)) { // creates in this elem: domify(obj, elem, [append]) 
     if (!atElem) isP5 ? bar.html('') : bar.innerHTML = ''; // no append, replace content 
-    return Object.keys(foo).forEach(key => domify(foo[key], key, bar));
+    return foo.forIn((val, key) => domify(val, key, bar));
   }
   if (atElem && bar) { // event handlers: domify(handler, event, elem)
     if (isP5 && ['mousePressed', 'doubleClicked', 'mouseWheel', 'mouseReleased', 'mouseClicked', 'mouseMoved', 'mouseOver', 'mouseOut', 'touchStarted', 'touchMoved', 'touchEnded', 'dragOver', 'dragLeave'].includes(bar))
@@ -46,7 +46,7 @@ var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from 
       if (prop === 'html') elem.innerHTML = val;
       else if (prop === 'text') elem.innerText = val;
       else if (IS_ARRAY && prop === 'class') foo.forEach(c => elem.classList.add(c.camelCase('-')));
-      else if (!IS_VAL && !IS_ARRAY && prop === 'style') Object.keys(foo).forEach(key => elem.style[key] = foo[key]); // styles passed as foo.prop (camelCase)
+      else if (!IS_VAL && !IS_ARRAY && prop === 'style') foo.forIn((val,key) => elem.style[key] = val); // styles passed as foo.prop (camelCase)
       else elem.setAttribute(prop, val);
       return;
     }
@@ -55,7 +55,7 @@ var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from 
     else {
       elem = isP5 ? createElement(tag) : document.body.appendChild(document.createElement(tag));
       if (IS_VAL)(isP5 ? elem.elt : elem).innerHTML = foo.markdown ? foo.markdown() : foo; // no children (markdown html)
-      else Object.keys(foo).forEach(key => domify(foo[key], key, elem)); // creates children
+      else foo.forIn((val,key) => domify(val, key, elem)); // creates children
     }
   }
   id = foo._id ? foo._id : !TAGGED ? bar : id;
