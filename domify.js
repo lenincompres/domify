@@ -6,7 +6,6 @@
 var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from a js obj or json/uri; supports p5.
   if ([null, undefined].includes(foo) || ['_tag', '_id', 'onready', 'onReady', 'onelement', '_bind', 'onvalue', '_numeric', '_true', '_false', '_binary', '_default'].includes(bar)) return;
   if (typeof foo === 'string' && foo.endsWith('.json')) return loadJSON(foo, data => domify(data, bar, atElem));
-  if (!window.dom) window.dom = {}; // creates dom obj to hold id'ed elems
   if (bar && (isP5 ? bar.elt : bar.tagName)) { // creates in this elem: domify(obj, elem, [append]) 
     if (!atElem) isP5 ? bar.html('') : bar.innerHTML = ''; // no append, replace content 
     return foo.forIn((val, key) => domify(val, key, bar));
@@ -52,13 +51,13 @@ var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from 
   id = foo._id ? foo._id : !TAGGED ? bar : id;
   if (id && isNaN(id)) { // adds elem to dom; ignores number ids
     var [unid, i] = [id, 1];
-    while (window.dom[unid]) {
+    while (window[unid]) {
       console.log(`The id "${unid}" already exists in the DOM (dom object).`);
       unid = id + i++;
       console.log(`The id "${unid}" was created instead.`);
     } // if element exists adds a number after the name
-    if (!IS_ARRAY) elem && isP5 ? elem.id(unid.camelCase('-')) : elem.setAttribute('id', unid.camelCase('-'));
-    window.dom[unid] = elem;
+    if (!IS_ARRAY) elem && isP5 ? elem.id(unid) : elem.setAttribute('id', unid);
+    window[unid] = elem;
   }
   if (!IS_ARRAY) {
     if (cls) cls.forEach(c => isP5 ? elem.addClass(c.camelCase('-')) : elem.classList.add(c.camelCase('-')));
@@ -79,7 +78,9 @@ var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from 
 };
 var domifyP5 = (foo, bar, atElem) => domify(foo, bar, atElem, true);
 var stylize = (style, elem) => domify(style, '_style', elem ? elem : document.body);
-class Bind { // allows _bind an element's property to a var (on window); calls onvalue when changed
+
+// allows _bind an element's property to a var (on window); calls onvalue when changed
+class Bind {
   constructor(elem, prop, onvalue = () => null, type, value){
     this.elem = elem;
     let [_false, _true] = Array.isArray(type) ? type : [false, false];
