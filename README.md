@@ -1,8 +1,6 @@
 # Domify
 by Lenin Compres
 
-## Basics
-
 The *domify* function creates DOM elements from a provided JS object. It returns the container element created.
 
 ```javascript
