@@ -94,11 +94,7 @@ Array.prototype.minus = function (arr = 0) {
 Array.prototype.times = function (arr = 1) { 
   return this.map((n, i) => n * (typeof arr === 'number' ? arr : arr[i % arr.length]));
 }
-
-
-/*---------------------------------- 
-P5 and RGB
-----------------------------------*/
+//P5 and RGB
 if (!!window.p5) {
   var opacate = (c, a) => { // returns color with changed opacity 
     c = color(c);
