@@ -193,15 +193,15 @@ The *false* and *true* values of a binary bind can be mapped by an array.
 
 ```javascript
 domify({
+  button: {
+    _text: 'Toggle',
+    onclick: e => thing.value = !thing.value
+  },
   p_thing: {
     _text: 'Now you see me.',
     _bind: 'style.display',
     _binary: ['none', 'block'],
     _default: false
-  },
-  button: {
-    _text: 'Toggle',
-    onclick: e => thing.value = !thing.value
   }
 });
 ```
@@ -210,15 +210,15 @@ Another way to map binary values is using the *_true* and *_false* properties in
 
 ```javascript
 domify({
+  button: {
+    _text: 'Toggle',
+    onclick: e => thing.value = !thing.value
+  },
   p_thing: {
     _text: 'Now you see me.',
     _bind: 'style.display',
     _true: 'block',
     _false: 'none'
-  },
-  button: {
-    _text: 'Toggle',
-    onclick: e => thing.value = !thing.value
   }
 });
 ```
