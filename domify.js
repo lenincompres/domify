@@ -1,7 +1,7 @@
 /*
  ** domify  makes html elements from a JS object (or JSON)
  ** created by: Lenin Compres
- ** it requires the auxiliary.js library
+ ** requires extend.js
  */
 var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from a js obj or json/uri; supports p5.
   if ([null, undefined].includes(foo) || ['_tag', '_id', 'onready', 'onReady', 'onelement', '_bind', 'onvalue', '_numeric', '_true', '_false', '_binary', '_default'].includes(bar)) return;
