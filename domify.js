@@ -3,10 +3,8 @@
  ** created by: Lenin Compres
  ** it requires the auxiliary.js library
  */
-var stylize = (style, elem) => domify(style, '_style', elem ? elem : document.body);
-var domifyP5 = (foo, bar, atElem) => domify(foo, bar, atElem, true);
 var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from a js obj or json/uri; supports p5.
-  if ([null, undefined].includes(foo) || ['_tag', '_id', 'onready', 'onReady', 'onelement'].includes(bar)) return;
+  if ([null, undefined].includes(foo) || ['_tag', '_id', 'onready', 'onReady', 'onelement', '_bind', 'onvalue', '_numeric', '_true', '_false', '_binary', '_default'].includes(bar)) return;
   if (typeof foo === 'string' && foo.endsWith('.json')) return loadJSON(foo, data => domify(data, bar, atElem));
   if (!window.dom) window.dom = {}; // creates dom obj to hold id'ed elems
   if (bar && (isP5 ? bar.elt : bar.tagName)) { // creates in this elem: domify(obj, elem, [append]) 
@@ -66,9 +64,44 @@ var domify = (foo, bar, atElem, isP5 = false) => { // creates dom elements from 
     if (cls) cls.forEach(c => isP5 ? elem.addClass(c.camelCase('-')) : elem.classList.add(c.camelCase('-')));
     if (atElem) isP5 ? atElem.child(elem) : atElem.appendChild(elem);
     var onready = foo.onready ? foo.onready : foo.onReady ? foo.onReady : foo.onelement;
-    if (onready) onready(isP5 ? elem.elt : elem); // passes element to function
-    var ready = foo.ready ? foo.ready : foo.element;
-    if (ready) ready(elem); // passes element to function
+    //Binding
+    if(foo.onvalue && !foo._bind) foo._bind = true;
+    if(foo._true) foo._binary = [foo._false, foo._true];
+    if(foo._binary === true) foo.binary = [false,true];
+    if (foo._bind) {
+      if(!id) console.log('Cannot bind an element with no id.'); 
+      else window[id] = new Bind(elem, foo._bind, foo.onvalue, foo._binary ? foo._binary : foo._numeric, foo._default); 
+    } // passes element to function
+    //finalizing
+    if (onready) onready(isP5 ? elem.elt : elem); // passes element to function when finalized
     return elem;
   }
 };
+var domifyP5 = (foo, bar, atElem) => domify(foo, bar, atElem, true);
+var stylize = (style, elem) => domify(style, '_style', elem ? elem : document.body);
+class Bind { // allows _bind an element's property to a var (on window); calls onvalue when changed
+  constructor(elem, prop, onvalue = () => null, type, value){
+    this.elem = elem;
+    let [_false, _true] = Array.isArray(type) ? type : [false, false];
+    let isNum = onvalue === true || type === true;
+    if(typeof prop === 'function') onvalue = prop;
+    if(typeof prop !== 'string') prop = elem.value === undefined ? 'innerText' : 'value';
+    if(prop === 'value') elem.onchange = e => eval(`this.value = '${elem.value}'`); // updates bind when input is changed
+    prop = `elem['${prop.split('.').join("']['")}']`; //prop for eval
+    this.onvalue = onvalue;
+    this._onvalue = val => {
+      if(_true) this._value = val ? _true : _false;
+      else this._value = isNum ? Number(val) : val;
+      eval('this.' + prop + ' = this._value');
+      if(_true) this._value = val;
+      this.onvalue(this._value);
+    };
+    this._onvalue(value !== undefined ? value : _true ? true : eval(prop));
+  }
+  set value(val) {
+    this._onvalue(val);
+  }
+  get value() {
+    return this._value;
+  }
+}
