@@ -35,7 +35,7 @@ If an element is passed as a second argument, *domify* will replace its content 
 
 Set element attributes preciding its property name with an underscore (\_). 
 * You may use *_html* for *_innerHTML* and *_text* for *_innerText*.
-* An element variable is created in the window when the lement is given an *id*.
+* An element variable is created in the window when the element is given an *id*.
 * Assign event handlers by using their names as properties (*onclick*, *onblur*, etc.).
 
 ```javascript
@@ -58,7 +58,7 @@ inputator.style.border = 'none';
 ```
 
 You may also assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *input_id*.
-* And you may pass *Styles* as an object and *classes* as an array.
+* And you may pass styles as an object and classes as an array.
 
 ```javascript
 domify({
