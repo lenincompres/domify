@@ -122,7 +122,7 @@ things[1].style.backgroundColor = 'yellow';
 ## Binding
 
 Use *_bind* to turn the element into a Bind element, which essentially reduces it to a single *value*. This value is linked to its *innerText* property, or *value* property for input type elements.
-* The Bind object has an *element* property which holds the element.
+* The Bind object has an *elem* property which holds the element.
 
 ```javascript
 domify({
@@ -136,7 +136,7 @@ domify({
   }
 });
 
-console.log(thing.element);
+console.log(thing.elem);
 ```
 You may specify that the value is numeric by setting the *_numeric* property to *true*.
 * An *onvalue* handler is called everytime the value changes.
