@@ -25,7 +25,7 @@ This DOM structure will be appended to the *body* inside a *main* tag. You may s
 domify({
   h2: 'Basic domified object',
   p: 'This <b>is</b> a paragraph.'
-});
+}, 'div', someElement);
 ```
 
 Unless indicated, the element will default to a *main* tag, and appended to the *body element*.
