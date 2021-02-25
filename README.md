@@ -8,7 +8,7 @@ The *domify* function creates DOM elements from a provided JS object. It returns
 ```javascript
 domify({
   header: {
-    h1: 'A Domify Page'
+    h1: 'A Domified Page'
   },
   main: {
     article: {
@@ -26,12 +26,12 @@ This DOM structure will be appended to the *body* inside a *main* tag. You may s
 ```javascript
 domify({
   header: {
-    h1: 'A Domify Page'
+    h1: 'A Domified Page'
   },
   main: {
     article: {
       h2: 'Specifying where to domify',
-      p: 'This <b>is</b> a paragraph.'
+      p: 'This is a <b>paragraph</b>.'
     }
   },
   footer: {
@@ -45,9 +45,9 @@ If an element is passed as a second argument, *domify* will replace its content 
 ## Attributes
 
 Set element attributes preciding a prop name with underscore (\_). 
-* You may use *_html* for *_innerHTML*, and *_text* for *_innerText*.
 * Giving an id to an element, creates the element variable in the window.
-* Event handlers mayb be assign using their names (*onclick*, *onblur*, etc.).
+* You may use *_html* for *_innerHTML* and *_text* for *_innerText*.
+* Assign event handlers using their names as properties (*onclick*, *onblur*, etc.).
 
 ```javascript
 domify({
@@ -55,56 +55,40 @@ domify({
    _id: 'inputator',
    _value: 'default',
    _placeholder : 'Type value here',
+   _style: 'color: "blue"; background-color: "yellow"',
    onchange: e => console.log(inputator.value)
  },
  button: {
-   _id : 'buttonator',
    _text : 'Go',
-   onclick: e => inputator.value = 'Go pressed'
+   _class: 'good pill',
+   onclick: e => inputator.value = 'Button pressed'
  }
-}, anElement);
+});
 
-buttonator.style.color = 'green';
+inputator.style.border = 'none';
 ```
 
-You may assign ids on the prop name by separating it from the tag with an underscore (\_).
+You may assign id\'s in the property\'s name by separating it from the tag with an underscore (\_).
+You may passed *Style* an object and *classes* as an array of strings.
 
 ```javascript
 domify({
  input_inputator: {
-   _value: 'default',
-   _placeholder : 'Type value here',
-   _style: 'color: "blue"; background-color: "yellow"',
-   onchange: e => console.log(inputator.value)
- },
- button_buttonator: {
-   _text : 'Go',
-   _class: 'good pill',
-   onclick: e => inputator.value = 'Go pressed'
- }
-}, anElement);
-
-buttonator.style.color = 'green';
-```
-
-The *style* attributes may be passed an object, and *classes* as an array of strings.
-
-```javascript
-domify({
-  p: {
-    _html: 'The button <b>does</b> the <i>thing</i>.'
     _style: {
       color: 'blue',
       backgroundColor: 'yellow'
     }
-  },
-  button_doThing: {
-    _text: 'Go',
-    _class: ['good', 'pill']
-  }
+ },
+ button: {
+   _text : 'Press',
+    _class: ['good', 'pill'],
+   onclick: e => inputator.value = 'Button pressed'
+ }
 });
 ```
-classes may also be passed un the prop name after the id, by separating them with underscores (\_). Use double underscores to omit an id and still indicate a classes.
+
+classes may also be passed un the property name after the id, by separating them with underscores (\_).
+Use double underscores to omit an id and still indicate a classes.
 
 ```javascript
 domify({
@@ -120,6 +104,7 @@ domify({
 ## List and element arrays
 
 Use arrays to create multiple alements of the same tag.
+* Giving the array an id creates an array of elements on the window.
 
 ```javascript
 domify({
@@ -145,11 +130,10 @@ domify({
 things[1].style.backgroundColor = 'yellow';
 ```
 
-Giving a array of elements an id creates the variable as an array of elements on the window.
-
 ## Binding
 
-Use *_bind* to turn the created element into a Bind element. This essentially reduces is to on *value*. But default the bind is done to the *innerText* of the element or the *value* if it is an input type element.
+Use *_bind* to turn the created element into a Bind element, which essentially reduces is to a *value*. The value is linked to the *innerText* property of the element, or *value* for input type elements.
+* The Bind object has an *element* property which holds the element.
 
 ```javascript
 domify({
@@ -162,27 +146,29 @@ domify({
     onclick: e => thing.value += 'Go! '
   }
 });
+
+console.log(thing.element);
 ```
-You may specify that the value is numeric.
-* The Bind object has an *element* property which holds the element.
+You may specify that the value is numeric setting the *_numeric* to true.
+* An *onvalue* handler is called everytime the value changes.
 
 ```javascript
 domify({
   p_thing: {
-    _text: '1',
+    _text: '0',
     _bind: true,
-    _numeric: true
+    _numeric: true,
+    onvalue: val => console.log(val)
   },
   button: {
     _text: 'Add one',
     onclick: e => thing.value += 1
   }
 });
-
-console.log(thing.element);
 ```
 
-You may bind a different attribute of the element. The may even be within attributes.
+You may bind a different property of the element, instead of the default *innerText* or *value*.
+This property may be within another.
 
 ```javascript
 domify({
@@ -197,15 +183,14 @@ domify({
 });
 ```
 
-The value may be binary. Which defaults to the value being *true*.
-* An *onvalue* handler is called everytime the value changes.
+The value may be binary.
+* It defaults to *true*.
 
 ```javascript
 domify({
   p_thing: {
     _bind: true,
-    _binary: true,
-    _onvalue: val => console.log(val)
+    _binary: true
   },
   button: {
     _text: 'Toggle',
@@ -214,9 +199,8 @@ domify({
 });
 ```
 
-The false and true values of a binary bind can be mapped differently by giving it an array.
-* You may also map the values using *_true* and *_false* props instead of *_binary*.
-* You indicate the default value.
+The false and true values of a binary bind can be mapped by giving it an array.
+* You may change the default value.
 
 ```javascript
 domify({
@@ -232,4 +216,22 @@ domify({
   }
 });
 ```
+
+You may also map the binary values using *_true* and *_false* props instead of *_binary*.
+
+```javascript
+domify({
+  p_thing: {
+    _text: 'Now you see me.',
+    _bind: 'style.display',
+    _true: 'block',
+    _false: 'none'
+  },
+  button: {
+    _text: 'Toggle',
+    onclick: e => thing.value = !thing.value
+  }
+});
+```
+
 ## Have fun!
