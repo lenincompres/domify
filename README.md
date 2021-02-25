@@ -23,21 +23,12 @@ This DOM structure will be appended to the *body* inside a *main* tag. You may s
 
 ```javascript
 domify({
-  header: {
-    h1: 'A Domified Page'
-  },
-  main: {
-    article: {
-      h2: 'Specifying where to domify',
-      p: 'This is a <b>paragraph</b>.'
-    }
-  },
-  footer: {
-    p: 'Made with domify'
-  }
-}, 'div', parentElement);
+  h2: 'Basic domified object',
+  p: 'This <b>is</b> a paragraph.'
+});
 ```
-Unless indicated these defaults to *main* in the *body element* are the defaults.
+
+Unless indicated, the element will default to a *main* tag, and appended to the *body element*.
 If an element is passed as a second argument, *domify* will replace its content with the domified object.
 
 ## Attributes
