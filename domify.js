@@ -1,14 +1,13 @@
 /*
  ** domify  makes html elements from a JS object (or JSON)
  ** created by: Lenin Compres
- ** requires extend.js
  */
 var domify = (foo, bar, atElem, isP5 = false) => {
   if ([null, undefined].includes(foo) || ['_tag', '_id', 'onready', 'onReady', 'onelement', '_bind', 'onvalue', '_numeric', '_true', '_false', '_binary', '_default'].includes(bar)) return;
   if (typeof foo === 'string' && foo.endsWith('.json')) return loadJSON(foo, data => domify(data, bar, atElem));
   if (bar && (isP5 ? bar.elt : bar.tagName)) { // creates in this elem: domify(obj, elem, [append]) 
     if (!atElem) isP5 ? bar.html('') : bar.innerHTML = ''; // no append, replace content 
-    return foo.forIn((val, key) => domify(val, key, bar));
+    return Object.keys(foo).map(key => domify(foo[key], key, bar));
   }
   if (atElem && bar) { // event handlers
     if (isP5 && ['mousePressed', 'doubleClicked', 'mouseWheel', 'mouseReleased', 'mouseClicked', 'mouseMoved', 'mouseOver', 'mouseOut', 'touchStarted', 'touchMoved', 'touchEnded', 'dragOver', 'dragLeave'].includes(bar))
@@ -35,8 +34,8 @@ var domify = (foo, bar, atElem, isP5 = false) => {
       var [prop, val] = [id, String(foo)]; // props start with '_'
       if (prop === 'html') elem.innerHTML = val;
       else if (prop === 'text') elem.innerText = val;
-      else if (IS_ARRAY && prop === 'class') foo.forEach(c => elem.classList.add(c.camelCase('-')));
-      else if (!IS_VAL && !IS_ARRAY && prop === 'style') foo.forIn((val,key) => elem.style[key] = val); // styles passed as foo.prop (camelCase)
+      else if (IS_ARRAY && prop === 'class') foo.forEach(c => elem.classList.add(c));
+      else if (!IS_VAL && !IS_ARRAY && prop === 'style') Object.assign(elem.style, foo);
       else elem.setAttribute(prop, val);
       return;
     }
@@ -45,39 +44,32 @@ var domify = (foo, bar, atElem, isP5 = false) => {
     else {
       elem = isP5 ? createElement(tag) : document.body.appendChild(document.createElement(tag));
       if (IS_VAL)(isP5 ? elem.elt : elem).innerHTML = foo.markdown ? foo.markdown() : foo; // no children (markdown html)
-      else foo.forIn((val,key) => domify(val, key, elem)); // creates children
+      else Object.keys(foo).map(key => domify(foo[key], key, elem));; // creates children
     }
   }
   id = foo._id ? foo._id : !TAGGED ? bar : id;
   if (id && isNaN(id)) { // adds elem; ignores number ids
     var [unid, i] = [id, 1];
-    while (window[unid]) {
-      console.log(`The id "${unid}" already exists in the DOM (dom object).`);
-      unid = id + i++;
-      console.log(`The id "${unid}" was created instead.`);
-    } // if element exists adds number after name
+    while (window[unid]) unid = id + i++; // if element exists adds number after name
     if (!IS_ARRAY) elem && isP5 ? elem.id(unid) : elem.setAttribute('id', unid);
     window[unid] = elem;
   }
   if (!IS_ARRAY) {
-    if (cls) cls.forEach(c => isP5 ? elem.addClass(c.camelCase('-')) : elem.classList.add(c.camelCase('-')));
+    if (cls) cls.forEach(c => isP5 ? elem.addClass(c) : elem.classList.add(c));
     if (atElem) isP5 ? atElem.child(elem) : atElem.appendChild(elem);
-    var onready = foo.onready ? foo.onready : foo.onReady ? foo.onReady : foo.onelement;
-    //Binding
     if(foo.onvalue && !foo._bind) foo._bind = true;
     if(foo._true) foo._binary = [foo._false, foo._true];
-    if(foo._binary === true) foo.binary = [false,true];
+    if(foo._binary === true) foo.binary = [false, true];
     if (foo._bind) {
-      if(!id) console.log('Cannot bind an element with no id.'); 
-      else window[id] = new Bind(elem, foo._bind, foo.onvalue, foo._binary ? foo._binary : foo._numeric, foo._default); 
-    } // passes element to function
-    //finalizing
+      if(!id) console.log('Cannot bind element with no id.'); 
+      else window[id] = new Bind(elem, foo._bind, foo.onvalue, foo._binary ? foo._binary : foo._numeric, foo._default);
+    }
+    var onready = foo.onready ? foo.onready : foo.onReady ? foo.onReady : foo.onelement;
     if (onready) onready(isP5 ? elem.elt : elem); // passes elem to function
     return elem;
   }
 };
 var domifyP5 = (foo, bar, atElem) => domify(foo, bar, atElem, true);
-var stylize = (style, elem) => domify(style, '_style', elem ? elem : document.body);
 class Bind {
   constructor(elem, prop, onvalue = () => null, type, value){
     this.elem = elem;
