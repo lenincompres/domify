@@ -57,11 +57,11 @@ var domify = (foo, bar, atElem, useP5) => {
   if (!IS_ARRAY) {
     if (cls) cls.forEach(c => useP5 ? elem.addClass(c) : elem.classList.add(c));
     if (atElem) useP5 ? atElem.child(elem) : atElem.appendChild(elem);
-    if(foo.onvalue && !foo._bind) foo._bind = true;
-    if(foo._true) foo._binary = [foo._false, foo._true];
-    if(foo._binary === true) foo.binary = [false, true];
+    if (foo.onvalue && !foo._bind) foo._bind = true;
+    if (foo._true) foo._binary = [foo._false, foo._true];
+    if (foo._binary === true) foo.binary = [false, true];
     if (foo._bind) {
-      if(!id) console.log('Cannot bind element with no id.'); 
+      if (!id) console.log('Cannot bind element with no id.');
       else window[id] = new Bind(elem, foo._bind, foo.onvalue, foo._binary ? foo._binary : foo._numeric, foo._default);
     }
     var onready = foo.onready ? foo.onready : foo.onReady ? foo.onReady : foo.onelement;
@@ -70,20 +70,20 @@ var domify = (foo, bar, atElem, useP5) => {
   }
 };
 class Bind {
-  constructor(elem, prop, onvalue = () => null, type, value){
+  constructor(elem, prop, onvalue = () => null, type, value) {
     this.elem = elem;
     let [_false, _true] = Array.isArray(type) ? type : [false, false];
     let isNum = onvalue === true || type === true;
-    if(typeof prop === 'function') onvalue = prop;
-    if(typeof prop !== 'string') prop = elem.value === undefined ? 'innerText' : 'value';
-    if(prop === 'value') elem.onchange = e => eval(`this.value = '${elem.value}'`); // updates when value changed
+    if (typeof prop === 'function') onvalue = prop;
+    if (typeof prop !== 'string') prop = elem.value === undefined ? 'innerText' : 'value';
+    if (prop === 'value') elem.onchange = e => eval(`this.value = '${elem.value}'`); // updates when value changed
     prop = `elem['${prop.split('.').join("']['")}']`; //prop for eval
     this.onvalue = onvalue;
     this._onvalue = val => {
-      if(_true) this._value = val ? _true : _false;
+      if (_true) this._value = val ? _true : _false;
       else this._value = isNum ? Number(val) : val;
       eval('this.' + prop + ' = this._value');
-      if(_true) this._value = val;
+      if (_true) this._value = val;
       this.onvalue(this._value);
     };
     this._onvalue(value !== undefined ? value : _true ? true : eval(prop));
