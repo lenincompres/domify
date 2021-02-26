@@ -19,7 +19,7 @@ domify({
   }
 });
 ```
-This DOM structure will be appended to the *body* inside a *main* tag. You may specify the tag for the container element, and the parent where it should go by passing them as following arguments.
+This DOM structure will be appended to the *body* of the page inside a *main* tag. The tag for the container element and the parent where it should be appended can be indicated as following arguments.
 
 ```javascript
 domify({
@@ -28,15 +28,15 @@ domify({
 }, 'div', someElement);
 ```
 
-Unless indicated, the element will default to a *main* tag, and appended to the *body element*.
+Unless indicated, the element will default to a *main* tag and appended to the *body element*.
 If an element is passed as a second argument, *domify* will replace its content with the domified object.
 
 ## Attributes
 
 Set element attributes preciding its property name with an underscore (\_). 
 * You may use *_html* for *_innerHTML* and *_text* for *_innerText*.
-* An element variable is created in the window when the element is given an *id*.
-* Assign event handlers by using their names as properties (*onclick*, *onblur*, etc.).
+* When given an *id*, an element object by that name is created in the window.
+* Event handlers can be set by using their names as properties (*onclick*, *onblur*, etc.).
 
 ```javascript
 domify({
@@ -77,7 +77,7 @@ domify({
 ```
 
 Classes may also be indicated in the property\'s name after the id, by separating them with underscores (\_). Example: *p_id_class1_class2*.
-* Use double underscores to omit an id and still indicate classes. Example: *p__pretty*.
+* Use double underscores to omit an id and still indicate classes. Example: *p__pretty* creates *<p class="pretty">*.
 
 ```javascript
 domify({
@@ -121,7 +121,7 @@ things[1].style.backgroundColor = 'yellow';
 
 ## Binding
 
-Use *_bind* to turn the element into a Bind element, which essentially reduces it to a single *value*. This value is linked to its *innerText* property, or *value* property for input type elements.
+Use *_bind* to turn the element into a Bind object, which essentially reduces it to a single *value*. This value is linked to its *innerText* property (or *value* property for input type elements).
 * The Bind object has an *elem* property which holds the element.
 
 ```javascript
@@ -138,7 +138,7 @@ domify({
 
 console.log(thing.elem);
 ```
-You may specify that the value is numeric by setting the *_numeric* property to *true*.
+You may specify that the bind value is numeric by setting the *_numeric* property to *true*.
 * An *onvalue* handler is called everytime the value changes.
 
 ```javascript
