@@ -62,17 +62,17 @@ You may also assign id\'s in the property\'s name by separating it from the tag 
 
 ```javascript
 domify({
- input_inputator: {
+  input_inputator: {
    _style: {
      color: 'blue',
      backgroundColor: 'yellow'
    }
- },
- button: {
+  },
+  button: {
    _text : 'Go',
    _class: ['good', 'pill'],
    onclick: e => inputator.value = 'Button pressed'
- }
+  }
 });
 ```
 
