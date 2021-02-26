@@ -1,7 +1,7 @@
 # Domify
 by Lenin Compres
 
-The *domify* function creates DOM elements from a provided JS object. It returns the container element created.
+The *domify* function creates DOM elements from a provided JS object. It returns the container element created. By default the element created has a *main* tag and gets appended to the *document.body*.
 
 ```javascript
 domify({
@@ -11,7 +11,7 @@ domify({
   main: {
     article: {
       h2: 'Basic domified object',
-      p: 'This <b>is</b> a paragraph.'
+      p: '<b>This</b> is a paragraph.'
     }
   },
   footer: {
@@ -19,17 +19,24 @@ domify({
   }
 });
 ```
-This DOM structure will be appended to the *body* of the page inside a *main* tag. The tag for the container element and the parent where it should be appended can be indicated as following arguments.
+The tag for the new element and the parent where it should be appended can be indicated as following arguments.
 
 ```javascript
 domify({
-  h2: 'Basic domified object',
+  h1: 'Hello world',
   p: 'This <b>is</b> a paragraph.'
 }, 'div', someElement);
 ```
 
-Unless indicated, the element will default to a *main* tag and appended to the *body element*.
 If an element is passed as a second argument, *domify* will replace its content with the domified object.
+* If any named prop is not an existing tag name. It assumes it to be an *id* and will created as a *div*.
+
+```javascript
+domify({
+  h1: 'Hello world',
+  content: 'This is a <i>div</i> with an <i>id</> of <i>content</i>.'
+}, document.body);
+```
 
 ## Attributes
 
