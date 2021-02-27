@@ -29,7 +29,7 @@ domify({
 ```
 
 If an element is passed as a second argument, *domify* will replace its content with the domified object.
-* If any named prop is not an existing tag name. It assumes it to be an *id* and will created as a *div*.
+* If any named prop is not an existing tag name, it will use this as an *id* and will created *div* tag.
 
 ```javascript
 domify({
@@ -65,7 +65,8 @@ inputator.style.border = 'none';
 ```
 
 You may also assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *input_id*.
-* And you may pass styles as an object and classes as an array.
+* Any value passed in a *_id* or *_tag* property will **replace** the ones interpreted from the name.
+* You may pass styles as an object and classes as an array.
 
 ```javascript
 domify({
@@ -84,6 +85,7 @@ domify({
 ```
 
 Classes may also be indicated in the property\'s name after the id, by separating them with underscores (\_). Example: *p_id_class1_class2*.
+* Any classes passed in a *_class* property will be **added** to the ones interpreted in the name.
 * Use double underscores to omit an id and still indicate classes. Example: *p__pretty* creates *<p class="pretty">*.
 
 ```javascript
