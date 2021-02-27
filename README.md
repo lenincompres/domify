@@ -28,14 +28,15 @@ domify({
 }, 'div', someElement);
 ```
 
-If an element is passed as a second argument, *domify* will replace its content with the domified object.
-* If any named prop is not an existing tag name, it will use this as an *id* and will created *div* tag.
+If an element is passed as a second argument, *domify* append the domified structure to it.
+* Pass *true* as the following attribute if you want the content to replace any existing one.
+* If a porperty is named as something other than a tag name, it will use this name as an *id* and create a *div* tag.
 
 ```javascript
 domify({
   h1: 'Hello world',
   content: 'This is a <i>div</i> with an <i>id</> of <i>content</i>.'
-}, document.body);
+}, someElement, true);
 ```
 
 ## Attributes
