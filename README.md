@@ -41,7 +41,6 @@ domify({
 ```
 
 You can also call *domify* as an Element object method.
-* If a porperty is named as something other than a tag name, it will use this name as an *id* and create a *div* tag.
 
 ```javascript
 someElement.domify({
