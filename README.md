@@ -129,14 +129,14 @@ domify({
     ]
   },
   article_things: [
-   {
-     h2: 'Article 1 title',
-     p: 'Article 1 paragraph.'
-   },
-   {
-     h2: 'Article 2 title',
-     p: 'Article 2 paragraph.'
-   }
+    {
+      h2: 'Article 1 title',
+      p: 'Article 1 paragraph.'
+    },
+    {
+      h2: 'Article 2 title',
+      p: 'Article 2 paragraph.'
+    }
   ]
 });
 
