@@ -1,7 +1,7 @@
 # Domify
 by Lenin Compres
 
-The *domify* function creates DOM elements from a provided JS object. It returns the container element created. By default the element created has a *main* tag and gets appended to the *document.body*.
+The *domify* function creates DOM elements from a provided JS object. It returns the container element created. By default the elements are appended to the *document.body*.
 
 ```javascript
 domify({
@@ -19,32 +19,43 @@ domify({
   }
 });
 ```
-The tag for the new element and the parent where it should be appended can be indicated as following arguments.
+You may provide a tag for the new element and a parent where it should be appended as following arguments.
 
 ```javascript
 domify({
   h1: 'Hello world',
   p: 'This <b>is</b> a paragraph.'
 }, 'div', someElement);
+
+/* This creates a div element with the domified structure inside someElement */
 ```
 
-If an element is passed as a second argument, *domify* append the domified structure to it.
+If no tag is passed, and an element is passed as a second argument instead, *domify* appends the domified structure to it.
 * Pass *true* as the following attribute if you want the content to replace any existing one.
-* If a porperty is named as something other than a tag name, it will use this name as an *id* and create a *div* tag.
 
 ```javascript
 domify({
   h1: 'Hello world',
-  content: 'This is a <i>div</i> with an <i>id</> of <i>content</i>.'
+  p: 'This is <b>a</b> paragraph.'
 }, someElement, true);
+```
+
+You can also call *domify* as an Element object method.
+* If a porperty is named as something other than a tag name, it will use this name as an *id* and create a *div* tag.
+
+```javascript
+someElement.domify({
+  h1: 'Hello world',
+  p: 'This is a <b>paragraph</b>.'
+}, true);
 ```
 
 ## Attributes
 
 Set element attributes preciding its property name with an underscore (\_). 
 * You may use *_html* for *_innerHTML* and *_text* for *_innerText*.
-* When given an *id*, an element object by that name is created in the window.
 * Event handlers can be set by using their names as properties (*onclick*, *onblur*, etc.).
+* When given an *id*, an element object by that name is created in the window.
 
 ```javascript
 domify({
@@ -56,6 +67,7 @@ domify({
     onchange: e => console.log(inputator.value)
   },
   button: {
+    _id: 'buttonator',
     _text : 'Go',
     _class: 'good pill',
     onclick: e => inputator.value = 'Button pressed'
@@ -63,24 +75,27 @@ domify({
 });
 
 inputator.style.border = 'none';
+buttonator.click();
 ```
 
-You may also assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *input_id*.
+You may also assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
 * Any value passed in a *_id* or *_tag* property will **replace** the ones interpreted from the name.
+* If a property is named as something other than a tag name, it will use this name as an *id* and create a *div* tag.
 * You may pass styles as an object and classes as an array.
 
 ```javascript
 domify({
   input_inputator: {
-   _style: {
-     color: 'blue',
-     backgroundColor: 'yellow'
-   }
+    _style: {
+      color: 'blue',
+      backgroundColor: 'yellow'
+    }
   },
-  button: {
-   _text : 'Go',
-   _class: ['good', 'pill'],
-   onclick: e => inputator.value = 'Button pressed'
+  buttonator: {
+    _tag: 'button',
+    _text : 'Go',
+    _class: ['good', 'pill'],
+    onclick: e => inputator.value = 'Button pressed'
   }
 });
 ```
