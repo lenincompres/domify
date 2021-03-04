@@ -101,7 +101,7 @@ domify({
 
 Classes may also be indicated in the property\'s name after the id, by separating them with underscores (\_). Example: *p_id_class1_class2*.
 * Any classes passed in a *_class* property will be **added** to the ones interpreted in the name.
-* Use double underscores to omit an id and still indicate classes. Example: *p__pretty* creates *<p class="pretty">*.
+* Use double underscores to omit an id and still indicate classes. Example: *p__pretty* creates *\<p class="pretty"\>*.
 
 ```javascript
 domify({
