@@ -5,17 +5,16 @@
 var domify = (foo, bar, atElem, useP5) => {
   if ([null, undefined].includes(foo) || ['_tag', '_id', 'onready', 'onReady', 'onelement', '_bind', 'onvalue', '_numeric', '_true', '_false', '_binary', '_default'].includes(bar)) return;
   if (typeof foo === 'string' && foo.endsWith('.json')) return loadJSON(foo, data => domify(data, bar, atElem));
-  if (bar && (useP5 ? bar.elt : bar.tagName)) { // creates in this elem: domify(obj, elem, [append]) 
+  if (!bar) bar = document.body; // default tag
+  if (useP5 ? bar.elt : bar.tagName) { // creates in this elem: domify(obj, elem, [append]) 
     if (!atElem) useP5 ? bar.html('') : bar.innerHTML = ''; // no append, replace content 
     return Object.keys(foo).map(key => domify(foo[key], key, bar));
   }
-  if (atElem && bar) { // event handlers
-    if (useP5 && ['mousePressed', 'doubleClicked', 'mouseWheel', 'mouseReleased', 'mouseClicked', 'mouseMoved', 'mouseOver', 'mouseOut', 'touchStarted', 'touchMoved', 'touchEnded', 'dragOver', 'dragLeave'].includes(bar))
-      return atElem[bar](foo);
-    if (['onblur', 'onchange', 'oninput', 'onfocus', 'onselect', 'onsubmit', 'onreset', 'onkeydown', 'onkeypress', 'onkeyup', 'onmouseover', 'onmouseout', 'onmousedown', 'onmouseup', 'onmousemove', 'onclick', 'ondblclick', 'onload', 'onerror', 'onunload', 'onresize'].includes(bar))
-      return (useP5 ? atElem.elt : atElem)[bar] = foo;
-  }
-  if (!bar) bar = 'main'; // default tag
+  if (!atElem) atElem = document.body;
+  if (useP5 && ['mousePressed', 'doubleClicked', 'mouseWheel', 'mouseReleased', 'mouseClicked', 'mouseMoved', 'mouseOver', 'mouseOut', 'touchStarted', 'touchMoved', 'touchEnded', 'dragOver', 'dragLeave'].includes(bar))
+    return atElem[bar](foo);
+  if (['onblur', 'onchange', 'oninput', 'onfocus', 'onselect', 'onsubmit', 'onreset', 'onkeydown', 'onkeypress', 'onkeyup', 'onmouseover', 'onmouseout', 'onmousedown', 'onmouseup', 'onmousemove', 'onclick', 'ondblclick', 'onload', 'onerror', 'onunload', 'onresize'].includes(bar))
+    return (useP5 ? atElem.elt : atElem)[bar] = foo;
   var [tag, id, ...cls] = bar.split('_'); // tag_id_classes
   if (bar.includes('.')) { // "tag#id.classes"
     cls = bar.split('.');
@@ -95,4 +94,7 @@ class Bind {
     return this._value;
   }
 }
+Element.prototype.domify = function(foo, replace) {
+  return domify(foo, this, replace);
+};
 var domifyP5 = (foo, bar, atElem) => domify(foo, bar, atElem, true);
