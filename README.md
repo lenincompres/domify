@@ -19,7 +19,7 @@ domify({
   }
 });
 
-/* the function returns the container element. */
+/* It returns the container element. */
 ```
 You may provide a tag for the new element and a parent where it should be appended as following arguments.
 
