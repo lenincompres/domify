@@ -113,7 +113,7 @@ domify({
 });
 ```
 
-## List and element arrays
+## Element arrays
 
 Use arrays to create multiple alements of the same tag
 
