@@ -40,7 +40,7 @@ domify({
   p: 'This is <b>a</b> paragraph.'
 }, someElement, true);  
 
-/* Pass *true* as the following argument to replace any existing content. */
+/* Pass true as the following argument to replace any existing content on the container element. */
 ```
 
 You can also call *domify* as an Element object method.
@@ -59,7 +59,7 @@ Set element attributes preciding its property name with an underscore (\_).
 ```javascript
 domify({
   input: {
-    _id: 'inputator', // When given an *id*, an element object by that name is created in the window.
+    _id: 'inputator', // When given an id, an element object by that name is created in the window.
     _value: 'default',
     _placeholder : 'Type value here',
     _style: 'color: "blue"; background-color: "yellow"',
@@ -67,7 +67,7 @@ domify({
   },
   button: {
     _id: 'buttonator',
-    _text : 'Go',  // You may use *_html* for *_innerHTML* and *_text* for *_innerText*.
+    _text : 'Go',  // You may use _html for _innerHTML, and _text for _innerText.
     _class: 'good pill',
     onclick: e => inputator.value = 'Button pressed'
   }
@@ -87,8 +87,8 @@ domify({
       backgroundColor: 'yellow'
     }  // You may assign styles as an object.
   },
-  buttonator: {  // If a property is named something other than a tag, it will use this name as an *id* and assume *div* tag.
-    _tag: 'button',  // Values passed in a *_id* or *_tag* property will replace the ones interpreted from the name.
+  buttonator: {  // If a property is named something other than a tag, it will use this name as an id and assume a div tag.
+    _tag: 'button',  // Values passed in a _id or _tag property will replace the ones interpreted from the name.
     _text : 'Go',
     _class: ['good', 'pill'],  // You may assign classes with an array
     onclick: e => inputator.value = 'Button pressed'
@@ -105,7 +105,7 @@ domify({
   },
   button_doThing_good_pill: {
     _text: 'Go'
-    _class: 'warning' // Classes in a *_class* property will be added to the ones interpreted in the name.
+    _class: 'warning' // Classes in a _class property will be added to the ones interpreted in the name.
   }
 });
 ```
@@ -155,7 +155,7 @@ domify({
   }
 });
 
-console.log(thing.elem);  // The Bind object has an *elem* property which holds the element.
+console.log(thing.elem);  // The Bind object has an elem property which holds the element.
 ```
 You may specify that the bind value is numeric by setting the *_numeric* property to *true*.
 
@@ -165,7 +165,7 @@ domify({
     _text: '0',
     _bind: true,
     _numeric: true,
-    onvalue: val => console.log(val)  // An *onvalue* handler is called everytime the value changes.
+    onvalue: val => console.log(val)  // An onvalue handler is called everytime the value changes.
   },
   button: {
     _text: 'Add one',
