@@ -169,7 +169,7 @@ domify({
     _text: '0',
     _bind: true,
     _numeric: true,
-    onvalue: val => console.log(val)  // An onvalue handler is called everytime the value changes.
+    onvalue: val => console.log(val)  // An onvalue handler is called whenever the value changes.
   },
   button: {
     _text: 'Add one',
