@@ -95,8 +95,8 @@ domify({
   }
 });
 
-/* If a property is named something other than a tag, it will use this as an id and assume a div tag. */
 buttonator.click();
+/* If a property is named something other than a tag, it will use this as an id and assume a div tag. */
 ```
 
 Classes may also be indicated in the property\'s name after the id, by separating them with underscores (\_). Example: *p_id_class1_class2*.
@@ -138,8 +138,8 @@ domify({
   ]
 });
 
-/* Giving the array an id creates an array of elements in the window. */
 things[1].style.backgroundColor = 'yellow';
+/* Giving the array an id creates an array of elements in the window. */
 ```
 
 ## Binding
