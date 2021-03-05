@@ -1,7 +1,8 @@
 # Domify
 by Lenin Compres
 
-The *domify* function creates DOM elements from a provided JS object sturcture. It returns the container element created. By default the elements are appended to the *document.body*.
+The *domify* function creates DOM elements from a provided JS object sturcture. By default the elements are appended to the *document.body*.
+*  It returns the container element. 
 
 ```javascript
 domify({
