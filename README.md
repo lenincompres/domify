@@ -38,7 +38,9 @@ If no tag is passed, and an element is passed as a second argument instead, *dom
 domify({
   h1: 'Hello world',
   p: 'This is <b>a</b> paragraph.'
-}, someElement, true);  // Pass *true* as the following argument if you want the content to replace any existing one.
+}, someElement, true);  
+
+/* Pass *true* as the following argument to replace any existing content. */
 ```
 
 You can also call *domify* as an Element object method.
