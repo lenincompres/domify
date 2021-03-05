@@ -142,7 +142,7 @@ things[1].style.backgroundColor = 'yellow';
 /* Giving the array an id creates an array of elements in the window. */
 ```
 
-## Binding
+## Binding (WORKING CONCEPT)
 
 Use *_bind* to turn the element into a Bind object, which essentially reduces it to a single *value*. This value is linked to its *innerText* property (or *value* property for input type elements).
 
