@@ -33,7 +33,7 @@ var domify = (foo, bar, atElem, useP5) => {
       var [prop, val] = [id, String(foo)];
       if (prop === 'html') elem.innerHTML = val;
       else if (prop === 'text') elem.innerText = val;
-      else if (IS_ARRAY && prop === 'class') foo.forEach(c => elem.classList.add(c));
+      else if (IS_ARRAY && prop === 'class') foo.forEach(c => c?elem.classList.add(c):null);
       else if (!IS_VAL && !IS_ARRAY && prop === 'style') Object.assign(elem.style, foo);
       else elem.setAttribute(prop, val);
       return;
