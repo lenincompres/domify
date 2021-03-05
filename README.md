@@ -88,7 +88,7 @@ domify({
     }
   },
   buttonator: {
-    _tag: 'button',  // _id or _tag properties will replace those interpreted from the name.
+    _tag: 'button',  // _id or _tag properties replace any interpreted from the name.
     _text : 'Go',
     _class: ['good', 'pill'],  // You may assign classes with an array
     onclick: e => inputator.value = 'Button pressed'
