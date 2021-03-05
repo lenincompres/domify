@@ -82,18 +82,21 @@ You may also assign id\'s in the property\'s name by separating it from the tag 
 ```javascript
 domify({
   input_inputator: {
-    _style: {
+    _style: {  // You may assign styles as an object.
       color: 'blue',
       backgroundColor: 'yellow'
-    }  // You may assign styles as an object.
+    }
   },
-  buttonator: {  // If a property is named something other than a tag, it will use this name as an id and assume a div tag.
-    _tag: 'button',  // Values passed in a _id or _tag property will replace the ones interpreted from the name.
+  buttonator: {
+    _tag: 'button',  // _id or _tag properties will replace those interpreted from the name.
     _text : 'Go',
     _class: ['good', 'pill'],  // You may assign classes with an array
     onclick: e => inputator.value = 'Button pressed'
   }
 });
+
+/* If a property is named something other than a tag, it will use this as an id and assume a div tag. */
+buttonator.click();
 ```
 
 Classes may also be indicated in the property\'s name after the id, by separating them with underscores (\_). Example: *p_id_class1_class2*.
@@ -105,7 +108,7 @@ domify({
   },
   button_doThing_good_pill: {
     _text: 'Go'
-    _class: 'warning' // Classes in a _class property will be added to the ones interpreted in the name.
+    _class: 'warning' // Classes in a _class property are added to the ones interpreted in the name.
   }
 });
 ```
@@ -135,7 +138,7 @@ domify({
   ]
 });
 
-// Giving the array an id creates an array of elements in the window.
+/* Giving the array an id creates an array of elements in the window. */
 things[1].style.backgroundColor = 'yellow';
 ```
 
@@ -155,7 +158,8 @@ domify({
   }
 });
 
-console.log(thing.elem);  // The Bind object has an elem property which holds the element.
+console.log(thing.elem);
+/* The Bind object has an elem property which holds the element. */
 ```
 You may specify that the bind value is numeric by setting the *_numeric* property to *true*.
 
