@@ -32,7 +32,7 @@ domify({
 ```
 
 If no tag is passed, and an element is passed as a second argument instead, *domify* appends the domified structure to it.
-* Pass *true* as the following attribute if you want the content to replace any existing one.
+* Pass *true* as the following argument if you want the content to replace any existing one.
 
 ```javascript
 domify({
