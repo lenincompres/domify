@@ -29,7 +29,8 @@ domify({
   p: 'This <b>is</b> a paragraph.'
 }, 'div', someElement, true);
 
-/* This creates a div element with the domified structure inside someElement. A boolean as the last argument indicates if the existing content of the element should be replaced. */
+/* This creates a div element with the domified structure inside someElement.
+A boolean as the last argument indicates if the existing content of the element should be replaced. */
 ```
 
 If no tag is indicated, but an element is instead, *domify* appends the domified structure to it.
