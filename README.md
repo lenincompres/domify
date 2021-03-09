@@ -29,17 +29,19 @@ domify({
   p: 'This <b>is</b> a paragraph.'
 }, 'div', someElement, true);
 
-/* This creates a div element with the domified structure inside someElement.
+/* Creates a div element with the domified structure inside someElement; returns this div element.
 A boolean as the last argument indicates if the existing content of the element should be replaced. */
 ```
 
-If no tag is indicated, but an element is instead, *domify* appends the domified structure to it.
+If no tag is indicated, but an element is, *domify* appends the domified structure to it.
 
 ```javascript
 domify({
   h1: 'Hello world',
   p: 'This is <b>a</b> paragraph.'
 }, someElement, true);
+
+/* this returns someElement */
 ```
 
 You can also call *domify* as an Element object method. The second parameter indicates wther the existing content of the element should be replaced.
@@ -57,6 +59,8 @@ someElement.domify({
   h1: 'Hello world',
   p: 'This is a paragraph.'
 }, 'main', true);
+
+/* this returns the main element */
 ```
 
 ## Attributes
