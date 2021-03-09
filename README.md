@@ -54,7 +54,7 @@ or
 ```javascript
 someElement.domify({
   h1: 'Hello world',
-  p: 'This is a <b>paragraph</b>.'
+  p: 'This is a paragraph.'
 }, 'main', true);
 ```
 
