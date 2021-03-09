@@ -49,6 +49,14 @@ someElement.domify({
   p: 'This is a <b>paragraph</b>.'
 }, true);
 ```
+or 
+
+```javascript
+someElement.domify({
+  h1: 'Hello world',
+  p: 'This is a <b>paragraph</b>.'
+}, 'main', true);
+```
 
 ## Attributes
 
