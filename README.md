@@ -27,23 +27,21 @@ You may provide a tag for the new element and a parent where it should be append
 domify({
   h1: 'Hello world',
   p: 'This <b>is</b> a paragraph.'
-}, 'div', someElement);
+}, 'div', someElement, true);
 
-/* This creates a div element with the domified structure inside someElement */
+/* This creates a div element with the domified structure inside someElement. A boolean as the last argument indicates if the existing content of the element should be replaced. */
 ```
 
-If no tag is passed, and an element is passed as a second argument instead, *domify* appends the domified structure to it.
+If no tag is indicated, but an element is instead, *domify* appends the domified structure to it.
 
 ```javascript
 domify({
   h1: 'Hello world',
   p: 'This is <b>a</b> paragraph.'
-}, someElement, true);  
-
-/* Pass true as the following argument to replace any existing content on the container element. */
+}, someElement, true);
 ```
 
-You can also call *domify* as an Element object method.
+You can also call *domify* as an Element object method. The second parameter indicates wther the existing content of the element should be replaced.
 
 ```javascript
 someElement.domify({
