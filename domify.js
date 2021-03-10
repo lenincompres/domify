@@ -34,25 +34,24 @@ Element.prototype.domify = function (model, prop, replace = false, useP5 = false
     tag = cls.shift();
   }
   if (tag.includes('#'))[tag, id] = tag.split('#');
-  const TAGGED = tag && tag.match(/^h[1-9]$/) || ['main', 'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map', 'mark', 'meta', 'meter', 'menu', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'progress', 'q', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'u', 'ul', 'var', 'video', 'wbr'].includes(tag);
-  tag = model._tag ? model._tag : TAGGED ? tag : false;
+  tag = model._tag ? model._tag : tag;
   // handle model
   const IS_VAL = isVal(model);
   const IS_ARRAY = !IS_VAL && Array.isArray(model);
   let elem = isElem(model) ? model : false;
   if (!elem) {
-    if (!tag && id) { // model is value for prop
-      //if (!this) return; // empty prop  ????
-      let elt = this.elt ? this.elt : this;
-      let [prop, val] = [id, String(model)];
-      if (prop === 'html') elt.innerHTML = val;
-      else if (prop === 'text') elt.innerText = val;
-      else if (IS_ARRAY && prop === 'class') model.forEach(c => c ? elt.classList.add(c) : null);
-      else if (!IS_VAL && !IS_ARRAY && prop === 'style') Object.assign(elt.style, model);
-      else elt.setAttribute(prop, val);
-      return;
+    let isTag = t => t.match(/^h[1-9]$/) || ['main', 'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map', 'mark', 'meta', 'meter', 'menu', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'progress', 'q', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'u', 'ul', 'var', 'video', 'wbr'].includes(t);
+    if (!isTag(tag)){
+      if (!tag && id) { // model is value for prop
+        if (id === 'html') return (this.innerHTML = model);
+        if (id === 'text') return (this.innerText = model);
+        if (id === 'class' && IS_ARRAY) return model.forEach(c => c ? this.classList.add(c) : null);
+        if (id === 'style' && !IS_VAL && !IS_ARRAY) return Object.assign(this.style, model);
+        return this.setAttribute(id, model);
+      }
+      id = tag;
+      tag = 'div';
     }
-    if (!tag) tag = 'div';
     if (IS_ARRAY) elem = model.map(o => this.domify(o, [tag, ...cls].join('.')));
     else {
       elem = useP5 ? createElement(tag) : this.appendChild(document.createElement(tag));
@@ -61,7 +60,7 @@ Element.prototype.domify = function (model, prop, replace = false, useP5 = false
     }
   }
   // handle id
-  id = model._id ? model._id : TAGGED ? id : tag ? tag : prop;
+  id = model._id ? model._id : id;
   if (id && isNaN(id)) { // adds elem; ignores number ids
     let [unid, i] = [id, 1];
     while (window[unid]) unid = id + i++; // if element exists adds number after name
