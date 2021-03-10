@@ -84,7 +84,7 @@ domify({
 
 inputator.style.border = 'none';
 buttonator.click();
-/* An element objects is created in the window for every id. */
+/* An element objects is created for every id given. */
 ```
 
 You may also assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
