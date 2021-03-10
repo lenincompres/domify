@@ -72,11 +72,11 @@ domify({
     _value: 'default',
     _placeholder : 'Type value here',
     _style: 'color: "blue"; background-color: "yellow"',
-    onchange: e => console.log(inputator.value)  // Defines event handlers.
+    onchange: e => console.log(inputator.value)  // Define event handlers.
   },
   button: {
     _id: 'buttonator',
-    _text : 'Go',  // You may use _text for _innerText, and _html for _innerHTML.
+    _text : 'Go',  // May use _text for _innerText, and _html for _innerHTML.
     _class: 'good pill',
     onclick: e => inputator.value = 'Button pressed'
   }
