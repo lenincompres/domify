@@ -92,13 +92,13 @@ You may also assign id\'s in the property\'s name by separating it from the tag 
 ```javascript
 domify({
   input_inputator: {
-    _style: {  // You may assign styles as an object.
+    _style: {  // May assign styles as an object.
       color: 'blue',
       backgroundColor: 'yellow'
     }
   },
   buttonator: {
-    _tag: 'button',  // _id or _tag properties replace any interpreted from the name.
+    _tag: 'button',  // _id and _tag properties replace those interpreted from the name.
     _text : 'Go',
     _class: ['good', 'pill'],  // You may assign classes with an array
     onclick: e => inputator.value = 'Button pressed'
@@ -106,7 +106,7 @@ domify({
 });
 
 buttonator.click();
-/* If a property is named something other than a tag, it will use this as an id and assume a div tag. */
+/* If a property is named something other than a tag, it will interpred this as an id and assume a div tag. */
 ```
 
 Classes may also be indicated in the property\'s name after the id, by separating them with underscores (\_). Example: *p_id_class1_class2*.
