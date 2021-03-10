@@ -29,8 +29,8 @@ domify({
   p: 'This <b>is</b> a paragraph.'
 }, someElement, true);
 
-/* Creates the domified structure inside someElement; returns someElement.
-A boolean as a last argument indicates if the existing content of the element should be replaced. */
+/* Creates the domified structure inside someElement. Returns someElement.
+A boolean as a last argument indicates if the existing content should be replaced. */
 ```
 
 You may also indicate a tag where the dom structure should be added within the element.
@@ -41,7 +41,7 @@ domify({
   p: 'This is <b>a</b> paragraph.'
 }, 'div', someElement, true);
 
-/* Creates a div element with the domified structure inside someElement; returns this div element.*/
+/* Creates a div element with the domified structure. Returns this div element. */
 ```
 
 You can also call *domify* as an Element object method.
