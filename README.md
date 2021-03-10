@@ -19,7 +19,7 @@ domify({
   }
 });
 
-/* It returns the container element, in this case *document.body*. */
+/* It returns the container element, in this case document.body. */
 ```
 You may provide the element where it should be created as the following argument.
 
@@ -41,7 +41,7 @@ domify({
   p: 'This is <b>a</b> paragraph.'
 }, 'main', someElement, true);
 
-/* Creates a main element with the domified structure. Returns this div element. */
+/* Creates a main element with the domified structure. Returns this main element. */
 ```
 
 You can also call *domify* as an Element object method.
