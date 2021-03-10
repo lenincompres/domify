@@ -63,7 +63,7 @@ someElement.domify({
 
 ## Attributes
 
-Set element attributes preciding its property name with an underscore (\_). 
+Set element attributes preciding its property name with an underscore. 
 
 ```javascript
 domify({
@@ -84,7 +84,7 @@ domify({
 
 inputator.style.border = 'none';
 buttonator.click();
-/* Element objects are created in the window for every id. */
+/* An element objects is created in the window for every id. */
 ```
 
 You may also assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
