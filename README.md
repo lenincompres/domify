@@ -39,9 +39,9 @@ You may also indicate a tag where the dom structure should be added within the e
 domify({
   h1: 'Hello world',
   p: 'This is <b>a</b> paragraph.'
-}, 'div', someElement, true);
+}, 'main', someElement, true);
 
-/* Creates a div element with the domified structure. Returns this div element. */
+/* Creates a main element with the domified structure. Returns this div element. */
 ```
 
 You can also call *domify* as an Element object method.
