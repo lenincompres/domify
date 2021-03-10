@@ -63,7 +63,7 @@ someElement.domify({
 
 ## Attributes
 
-Set element attributes preciding its property name with an underscore. 
+Set element attributes preciding its property name with an underscore. The function also recognizes event handlers.
 
 ```javascript
 domify({
@@ -72,11 +72,11 @@ domify({
     _value: 'default',
     _placeholder : 'Type value here',
     _style: 'color: "blue"; background-color: "yellow"',
-    onchange: e => console.log(inputator.value)  // Define event handlers.
+    onchange: e => console.log(inputator.value)
   },
   button: {
     _id: 'buttonator',
-    _text : 'Go',  // May use _text for _innerText, and _html for _innerHTML.
+    _text : 'Go',  // _text or _innerText, and _html or _innerHTML.
     _class: 'good pill',
     onclick: e => inputator.value = 'Button pressed'
   }
