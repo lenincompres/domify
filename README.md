@@ -68,15 +68,15 @@ Set element attributes preciding its property name with an underscore (\_).
 ```javascript
 domify({
   input: {
-    _id: 'inputator', // When given an id, an element object by that name is created in the window.
+    _id: 'inputator',
     _value: 'default',
     _placeholder : 'Type value here',
     _style: 'color: "blue"; background-color: "yellow"',
-    onchange: e => console.log(inputator.value)  // You may defined event handlers.
+    onchange: e => console.log(inputator.value)  // Defines event handlers.
   },
   button: {
     _id: 'buttonator',
-    _text : 'Go',  // You may use _html for _innerHTML, and _text for _innerText.
+    _text : 'Go',  // You may use _text for _innerText, and _html for _innerHTML.
     _class: 'good pill',
     onclick: e => inputator.value = 'Button pressed'
   }
@@ -84,6 +84,7 @@ domify({
 
 inputator.style.border = 'none';
 buttonator.click();
+/* Element objects are created in the window for every id. */
 ```
 
 You may also assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
