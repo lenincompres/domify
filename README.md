@@ -19,7 +19,7 @@ domify({
   }
 });
 
-/* It returns the container element. In this case *document.body*. */
+/* It returns the container element, in this case *document.body*. */
 ```
 You may provide the element where it should be created as the following argument.
 
