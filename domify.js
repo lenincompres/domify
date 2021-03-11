@@ -68,6 +68,6 @@
    let onready = model.onready ? model.onready : model.onReady;
    if (onready) onready(elem);
    P5Elem ? P5Elem.child(elem) : this.appendChild(elem);
-   if (typeof bind === 'function' && id) bind(P5Elem ? elem.elt : elem, model._bind, model.onvalue, model._true !== undefined ? [model._false, model._true] : model._binary ? model._binary : model._numeric, model._default);
+   if (typeof domifyBind === 'function' && id) window[id] = domifyBind(P5Elem ? elem.elt : elem, model);
    return elem;
  };
