@@ -63,21 +63,21 @@ someElement.domify({
 
 ## Attributes
 
-Set element attributes preciding its property name with an underscore. The function also recognizes event handlers.
+Domify recognizes propertinames of element attributes and event handlers.
 
 ```javascript
 domify({
   input: {
-    _id: 'inputator',
-    _value: 'default',
-    _placeholder : 'Type value here',
-    _style: 'color: "blue"; background-color: "yellow"',
+    id: 'inputator',
+    value: 'default',
+    placeholder : 'Type value here',
+    style: 'color: "blue"; background-color: "yellow"',
     onchange: e => console.log(inputator.value)
   },
   button: {
-    _id: 'buttonator',
-    _text : 'Go',  // _text or _innerText, and _html or _innerHTML.
-    _class: 'good pill',
+    id: 'buttonator',
+    text : 'Go',  // text or innerText, and html or innerHTML.
+    class: 'good pill',
     onclick: e => inputator.value = 'Button pressed'
   }
 });
@@ -92,15 +92,15 @@ You may also assign id\'s in the property\'s name by separating it from the tag 
 ```javascript
 domify({
   input_inputator: {
-    _style: {  // May assign styles as an object.
+    style: {  // May assign styles as an object.
       color: 'blue',
       backgroundColor: 'yellow'
     }
   },
   buttonator: {
-    _tag: 'button',  // _id and _tag properties replace those interpreted from the name.
-    _text : 'Go',
-    _class: ['good', 'pill'],  // You may assign classes with an array
+    tag: 'button',  // _id and _tag properties replace those interpreted from the name.
+    text : 'Go',
+    class: ['good', 'pill'],  // You may assign classes with an array
     onclick: e => inputator.value = 'Button pressed'
   }
 });
@@ -114,11 +114,11 @@ Classes may also be indicated in the property\'s name after the id, by separatin
 ```javascript
 domify({
   p__pretty: {  // Use double underscores to omit an id and still indicate classes.
-    _html: 'The button <b>does</b> the <i>thing</i>.'
+    html: 'The button <b>does</b> the <i>thing</i>.'
   },
   button_doThing_good_pill: {
-    _text: 'Go'
-    _class: 'warning' // Classes in a _class property are added to the ones interpreted in the name.
+    text: 'Go'
+    class: 'warning' // Classes in a _class property are added to the ones interpreted in the name.
   }
 });
 ```
@@ -130,7 +130,7 @@ Use arrays to create multiple alements of the same tag
 ```javascript
 domify({
   ul: {
-    _style: 'margin:2em',
+    style: 'margin:2em',
     li: [
       'first item',
       'second item'
@@ -161,11 +161,11 @@ Use *_bind* to turn the element into a Bind object, which essentially reduces it
 ```javascript
 domify({
   p_thing: {
-    _text: 'Times pressed: ',
-    _bind: true
+    text: 'Times pressed: ',
+    bind: true
   },
   button: {
-    _text: 'Go',
+    text: 'Go',
     onclick: e => thing.value += 'Go! '
   }
 });
@@ -178,13 +178,13 @@ You may specify that the bind value is numeric by setting the *_numeric* propert
 ```javascript
 domify({
   p_thing: {
-    _text: '0',
-    _bind: true,
-    _numeric: true,
+    text: '0',
+    bind: true,
+    numeric: true,
     onvalue: val => console.log(val)  // An onvalue handler is called whenever the value changes.
   },
   button: {
-    _text: 'Add one',
+    text: 'Add one',
     onclick: e => thing.value += 1
   }
 });
@@ -195,11 +195,11 @@ You may bind a different property of the element instead of the defaults *innerT
 ```javascript
 domify({
   p_thing: {
-    _text: 'Make me red',
-    _bind: 'style.color'  // This property may be within another property.
+    text: 'Make me red',
+    bind: 'style.color'  // This property may be within another property.
   },
   button: {
-    _text: 'Make red',
+    text: 'Make red',
     onclick: e => thing.value = 'red'
   }
 });
@@ -210,11 +210,11 @@ The value may be binary. It defaults to being *true*.
 ```javascript
 domify({
   p_thing: {
-    _bind: true,
-    _binary: true
+    bind: true,
+    binary: true
   },
   button: {
-    _text: 'Toggle',
+    text: 'Toggle',
     onclick: e => thing.value = !thing.value
   }
 });
@@ -225,31 +225,14 @@ The *false* and *true* values of a binary bind can be mapped by an array.
 ```javascript
 domify({
   button: {
-    _text: 'Toggle',
+    text: 'Toggle',
     onclick: e => thing.value = !thing.value
   },
   p_thing: {
-    _text: 'Now you see me.',
-    _bind: 'style.display',
-    _binary: ['none', 'block'],
-    _default: false  // You may also change the default value.
-  }
-});
-```
-
-Another way to map binary values is using the *_true* and *_false* properties instead of *_binary*.
-
-```javascript
-domify({
-  button: {
-    _text: 'Toggle',
-    onclick: e => thing.value = !thing.value
-  },
-  p_thing: {
-    _text: 'Now you see me.',
-    _bind: 'style.display',
-    _true: 'block',
-    _false: 'none'
+    text: 'Now you see me.',
+    bind: 'style.display',
+    binary: ['none', 'block'],
+    default: false  // You may also change the default value.
   }
 });
 ```
