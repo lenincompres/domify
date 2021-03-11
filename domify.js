@@ -2,34 +2,28 @@
  ** domify makes html element structures from a JS object model
  ** created by: Lenin Compres
  */
- var domify = (...args) => document.body.domify(...args);
- if (typeof p5 !== 'undefined') p5.Element.prototype.domify = function (model, prop, replace) {
-   this.elt.domify(model, prop, replace, this);
- }
- Element.prototype.domify = function (model, prop, replace = false, p5Elem) {
+ Element.prototype.domify = function (model, prop, clear, p5Elem) {
    if ([null, undefined].includes(model)) return;
    if (['_tag', '_id', 'onready', 'onReady', 'onvalue', '_bind', '_numeric', '_true', '_false', '_binary', '_default'].includes(prop)) return;
    if (typeof prop === 'boolean' || !prop) {
-     p5Elem = replace;
-     replace = prop;
+     p5Elem = clear;
+     clear = prop;
      prop = this;
    }
    let isElem = o => o && (o.elt || o.tagName);
-   if (isElem(replace)) return replace.domify(model, prop, p5Elem);
-   if (isElem(prop)) return Object.keys(model).map(key => prop.domify(model[key], key, replace));
-   if (replace === true) this.innerHTML = '';
+   if (isElem(clear)) return clear.domify(model, prop, p5Elem);
+   if (isElem(prop)) return Object.keys(model).map(key => prop.domify(model[key], key, clear));
+   if (clear === true) this.innerHTML = '';
    // attibutes and events
    const IS_ARRAY = Array.isArray(model);
    const IS_VAL = ['boolean', 'number', 'string'].includes(typeof model);
-   if (typeof prop === 'string' && prop[0] === '_') {
-     if (prop === '_html') return (this.innerHTML = model);
-     if (prop === '_text') return (this.innerText = model);
-     if (prop === '_class' && IS_ARRAY) return model.forEach(c => this.classList.add(c));
-     if (prop === '_style' && !IS_VAL && !IS_ARRAY) return Object.assign(this.style, model);
-     return this.setAttribute(prop.slice(1), model);
-   }
-   if (p5Elem && ['mousePressed', 'doubleClicked', 'mouseWheel', 'mouseReleased', 'mouseClicked', 'mouseMoved', 'mouseOver', 'mouseOut', 'touchStarted', 'touchMoved', 'touchEnded', 'dragOver', 'dragLeave'].includes(prop)) return p5Elem[prop](model);
+   if (['html','innerHTML'].includes(prop)) return (this.innerHTML = model);
+   if (['text','innerText'].includes(prop)) return (this.innerText = model);
+   if (prop === 'class' && IS_ARRAY) return model.forEach(c => this.classList.add(c));
+   if (prop === 'style' && !IS_VAL && !IS_ARRAY) return Object.assign(this.style, model);
+   if(['accept', 'accept-charset', 'accesskey', 'action', 'align', 'alt', 'async', 'autocomplete', 'autofocus', 'autoplay', 'bgcolor', 'border', 'charset', 'checked', 'cite', 'class', 'color', 'cols', 'colspan', 'content', 'contenteditable', 'controls', 'coords', 'data', 'datetime', 'default', 'defer', 'dir', 'dirname', 'disabled', 'download', 'draggable', 'enctype', 'for', 'form', 'formaction', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'http-equiv', 'id', 'ismap', 'kind', 'label', 'lang', 'list', 'loop', 'low', 'max', 'maxlength', 'media', 'method', 'min', 'multiple', 'muted', 'name', 'novalidate', 'open', 'optimum', 'pattern', 'placeholder', 'poster', 'preload', 'readonly', 'rel', 'required', 'reversed', 'rows', 'rowspan', 'sandbox', 'scope', 'selected', 'shape', 'size', 'sizes', 'span', 'spellcheck', 'src', 'srcdoc', 'srclang', 'srcset', 'start', 'step', 'style', 'tabindex', 'target', 'title', 'translate', 'type', 'usemap', 'value', 'width', 'wrap'].includes(prop) || prop.startsWith('data-')) return this.setAttribute(prop, model);
    if (['onblur', 'onchange', 'oninput', 'onfocus', 'onselect', 'onsubmit', 'onreset', 'onkeydown', 'onkeypress', 'onkeyup', 'onmouseover', 'onmouseout', 'onmousedown', 'onmouseup', 'onmousemove', 'onclick', 'ondblclick', 'onload', 'onerror', 'onunload', 'onresize'].includes(prop)) return this[prop] = model;
+   if (p5Elem && ['mousePressed', 'doubleClicked', 'mouseWheel', 'mouseReleased', 'mouseClicked', 'mouseMoved', 'mouseOver', 'mouseOut', 'touchStarted', 'touchMoved', 'touchEnded', 'dragOver', 'dragLeave'].includes(prop)) return p5Elem[prop](model);
    // tag, id and classes from prop (tag_id_classes) or (tag#id.classes)
    let [tag, id, ...cls] = prop.split('_');
    if (prop.includes('.')) {
@@ -65,3 +59,7 @@
    if (typeof domifyBind === 'function' && id) window[id] = domifyBind(p5Elem ? elem.elt : elem, model);
    return elem;
  };
+ var domify = (...args) => document.body.domify(...args);
+ if (typeof p5 !== 'undefined') p5.Element.prototype.domify = function (model, prop, replace) {
+   this.elt.domify(model, prop, replace, this);
+ }
