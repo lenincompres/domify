@@ -4,7 +4,7 @@
  */
  Element.prototype.domify = function (model, prop, clear, p5Elem) {
   if ([null, undefined].includes(model)) return;
-  if (['tag', 'id', 'onready', 'onReady', 'onvalue', 'bind', 'numeric', 'binary'].includes(prop)) return;
+  if (['tag', 'id', 'onready', 'onReady', 'onvalue', 'bind', 'numeric', 'binary', 'value'].includes(prop)) return;
   if (typeof prop === 'boolean' || !prop) {
     p5Elem = clear;
     clear = prop;
@@ -16,15 +16,17 @@
   if (clear === true) this.innerHTML = '';
   // attibutes and events
   const IS_ARRAY = Array.isArray(model);
+  const IS_FUNCTION = typeof model === 'function';
   const IS_VALUE = ['boolean', 'number', 'string'].includes(typeof model);
-  if (IS_ARRAY && prop === 'class') return model.forEach(c => c ? this.classList.add(c) : null);
-  if (!IS_VALUE && !IS_ARRAY && prop === 'style') return Object.assign(this.style, model);
   if (['html','innerHTML'].includes(prop)) return (this.innerHTML = model);
   if (['text','innerText'].includes(prop)) return (this.innerText = model);
-  if(IS_VALUE && ['accept', 'accept-charset', 'accesskey', 'action', 'align', 'alt', 'async', 'autocomplete', 'autofocus', 'autoplay', 'bgcolor', 'border', 'charset', 'checked', 'cite', 'class', 'color', 'cols', 'colspan', 'content', 'contenteditable', 'controls', 'coords', 'data', 'datetime', 'default', 'defer', 'dir', 'dirname', 'disabled', 'download', 'draggable', 'enctype', 'for', 'form', 'formaction', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'http-equiv', 'id', 'ismap', 'kind', 'label', 'lang', 'list', 'loop', 'low', 'max', 'maxlength', 'media', 'method', 'min', 'multiple', 'muted', 'name', 'novalidate', 'open', 'optimum', 'pattern', 'placeholder', 'poster', 'preload', 'readonly', 'rel', 'required', 'reversed', 'rows', 'rowspan', 'sandbox', 'scope', 'selected', 'shape', 'size', 'sizes', 'span', 'spellcheck', 'src', 'srcdoc', 'srclang', 'srcset', 'start', 'step', 'style', 'tabindex', 'target', 'title', 'translate', 'type', 'usemap', 'value', 'width', 'wrap'].includes(prop) || prop.startsWith('data-')) return this.setAttribute(prop, model); // beware ['cite', 'form', 'label', 'span', 'style', 'title'] are both attr and tag
-  if (['onblur', 'onchange', 'oninput', 'onfocus', 'onselect', 'onsubmit', 'onreset', 'onkeydown', 'onkeypress', 'onkeyup', 'onmouseover', 'onmouseout', 'onmousedown', 'onmouseup', 'onmousemove', 'onclick', 'ondblclick', 'onload', 'onerror', 'onunload', 'onresize'].includes(prop)) return this[prop] = model;
-  if (p5Elem && ['mousePressed', 'doubleClicked', 'mouseWheel', 'mouseReleased', 'mouseClicked', 'mouseMoved', 'mouseOver', 'mouseOut', 'touchStarted', 'touchMoved', 'touchEnded', 'dragOver', 'dragLeave'].includes(prop)) return p5Elem[prop](model);
-  // prop as tag_id_classes or tag#id.classes
+  if (prop === 'class' && IS_ARRAY) return model.forEach(c => c ? this.classList.add(c) : null);
+  if (prop === 'style' && !IS_VALUE && !IS_ARRAY) return Object.assign(this.style, model);
+  if(IS_VALUE && this.style[prop] !== undefined) return this.style[prop] = model;
+  if(IS_VALUE && ['accept', 'accept-charset', 'accesskey', 'action', 'align', 'alt', 'async', 'autocomplete', 'autofocus', 'autoplay', 'bgcolor', 'border', 'charset', 'checked', 'cite', 'class', 'color', 'cols', 'colspan', 'content', 'contenteditable', 'controls', 'coords', 'data', 'datetime', 'default', 'defer', 'dir', 'dirname', 'disabled', 'download', 'draggable', 'enctype', 'for', 'form', 'formaction', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'http-equiv', 'id', 'ismap', 'kind', 'label', 'lang', 'list', 'loop', 'low', 'max', 'maxlength', 'media', 'method', 'min', 'multiple', 'muted', 'name', 'novalidate', 'open', 'optimum', 'pattern', 'placeholder', 'poster', 'preload', 'readonly', 'rel', 'required', 'reversed', 'rows', 'rowspan', 'sandbox', 'scope', 'selected', 'shape', 'size', 'sizes', 'span', 'spellcheck', 'src', 'srcdoc', 'srclang', 'srcset', 'start', 'step', 'style', 'tabindex', 'target', 'title', 'translate', 'type', 'usemap', 'value', 'width', 'wrap'].includes(prop) || prop.startsWith('data-')) return this.setAttribute(prop, model);
+   if(IS_FUNCTION && this[prop] !== undefined) return this[prop] = model;
+  if (p5Elem && typeof IS_FUNCTION && this[prop] !== undefined) return p5Elem[prop](model);
+  // tag, id and classes from prop (tag_id_classes) or (tag#id.classes)
   let [tag, id, ...cls] = prop.split('_');
   if (prop.includes('.')) {
     cls = prop.split('.');
