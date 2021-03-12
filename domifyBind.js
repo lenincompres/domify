@@ -1,8 +1,5 @@
- var domifyBind = (elem, model) => {
-  if (model._binary === true) model._binary = [false, true];
-  let prop = model.onvalue ? (model._bind ? model._bind : true) : false;
-  let type = model._true !== undefined ? [model._false, model._true] : (model._binary ? model._binary : model._numeric);
-  return new Bind(elem, prop, model.onvalue, type, model._default);
+var domifyBind = (elem, model) => {
+  if (model.onvalue || model.bind) window[id] = new Bind(elem, model.onvalue && !model.bind ? true : model.bind, model.onvalue, model.binary === true ? [false, true] : model.binary ? model.binary : model.numeric, model.value);
 }
 class Bind {
   constructor(elem, prop, onvalue = () => null, type, value) {
