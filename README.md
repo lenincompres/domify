@@ -63,7 +63,7 @@ someElement.domify({
 
 ## Attributes
 
-Domify recognizes propertinames of element attributes and event handlers.
+Domify recognizes property names of element attributes and event handlers.
 
 ```javascript
 domify({
