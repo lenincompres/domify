@@ -20,16 +20,14 @@ styles & tags duplicates ["font"]
 
 SOLVED:
 
-"border", "color", "height", "width"
-Are treated as a css style, but the effect is the same as the attribute.
+"border", "color", "height", "width": Are treated as a css style, but the effect is the same as the attribute.
 
-"form", "label", "font", "cite", "style", "title"
-If the content to assign is a structural object, these are tags; if it is a string, boolean or number, these are attributes (or slyle for "font")
+"form", "label", "font", "cite", "style", "title", "span": are treated as tags if the content is a structural object.
+If it is a string, boolean or number, they are attributes (or slyle for "font")
+"span" is an attribute only on "col" and "colgroup" tags.
 
-"content", "style"
-Domify does not assign direct styles on document.head and will only see "style" as a tag
+"content", "style": Domify will not assign styles to the document.head and will only see "style" as a tag
 
-"title"
-This is a tag only in document.head, and an attibute elsewhere.
+"title" is a tag only in document.head.
 
 */
