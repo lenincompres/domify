@@ -73,7 +73,7 @@ domify({
     value: 'default',
     placeholder : 'Type value here',
     class: 'good field',
-    style: 'color: "blue"; background-color: "yellow"',
+    style: 'color: blue; background-color: yellow',
     onchange: e => console.log(myField.value)
   },
   button: {
