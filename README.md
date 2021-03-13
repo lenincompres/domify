@@ -68,22 +68,22 @@ Domify recognizes property names of element attributes and event handlers.
 ```javascript
 domify({
   input: {
-    id: 'inputator',
+    id: 'myField',
     value: 'default',
     placeholder : 'Type value here',
     style: 'color: "blue"; background-color: "yellow"',
     onchange: e => console.log(inputator.value)
   },
   button: {
-    id: 'buttonator',
+    id: 'goBtn',
     text : 'Go',  // text or innerText, and html or innerHTML.
     class: 'good pill',
     onclick: e => inputator.value = 'Button pressed'
   }
 });
 
-inputator.style.border = 'none';
-buttonator.click();
+myField.style.border = 'none';
+goBtn.click();
 /* An element objects is created for every id given. */
 ```
 
@@ -92,7 +92,7 @@ Style may be assign as an object; and classes as an array
 ```javascript
 domify({
   input: {
-    id: inputator,
+    id: myField,
     style: {
       color: 'blue',
       backgroundColor: 'yellow'
@@ -101,7 +101,7 @@ domify({
   button: {
     text : 'Go',
     class: ['good', 'pill'],
-    onclick: e => inputator.value = 'Button pressed'
+    onclick: e => myField.value = 'Button pressed'
   }
 });
 ```
@@ -111,7 +111,7 @@ You may also change style variable directly.
 ```javascript
 domify({
   input: {
-    id: inputator,
+    id: myField,
     color: 'blue',
     backgroundColor: 'yellow'
     value: 'content'
@@ -144,19 +144,19 @@ document.head.domify({
 
 ## Unique Property Names
 
-You may  assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
-And if a property is named something other than a tag, sttribute of style, it will interpred this as an id and assume a div tag.
+You may  assign id\'s in the property name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
+If the name is not recognizable (as a tag, attribute or style), it is interpred as an id and assumed a div tag.
 
 ```javascript
 domify({
-  input_inputator: {
+  input_myField: {
     color: 'blue',
     backgroundColor: 'yellow'
   },
-  buttonator: {
+  goBtn: {
     tag: 'button',  // id and tag properties replace those interpreted from the name.
     text : 'Go',
-    onclick: e => inputator.value = 'Button pressed'
+    onclick: e => myField.value = 'Button pressed'
   }
 });
 ```
