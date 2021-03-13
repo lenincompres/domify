@@ -43,7 +43,8 @@ domify({
 /* Creates a main element with the domified structure. Returns this main element. */
 ```
 
-**Domify is agnostic about the order of the arguments that follow model scturture the (first one). A boolean is a flag to clear the element. A String is a the tag of a new element to create. An element is where it should be created.**
+**Domify is agnostic about the order of the arguments that follow the first one: 
+A boolean is a flag to clear the element. A String is a the tag for a new element. An element is where it should be created.**
 
 You can call *domify* as an Element method.
 
