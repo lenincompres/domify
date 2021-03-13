@@ -123,15 +123,13 @@ domify({
 
 ### Words that could be interpreted as tags, attributes or styles
 
-*border*, *color*, *height*, *width* are treated as a css style, but the effect is the same as the attribute.
+*border*, *color*, *height*, and *width* are treated as a css style, not attributes.
 
-*form*, *label*, *font*, *cite*, *style*, *title*, *span* are treated as tags if the content is a structural object.
-Othewise they are attributes (or style for *font*)
+*form*, *label*, *font*, *cite*, *style*, *title* and *span* are treated as tags if the content is a structural object, othewise they are attributes (or style in cse of *font*).
 
-*span* is an attribute only on *col* and *colgroup* tags.
+*span* is an attribute only for the *col* and *colgroup* tags.
 
-Domify will not assign styles to the document.head and will only see "style" as a tag, which resolves *content* and *style* 
-Also, *title* is a tag only in document.head.
+Domify will not assign styles to the document.head which resolves *content* and *style*. Also, *title* is a tag only in document.head.
 
 ## Unique Property Names
 
