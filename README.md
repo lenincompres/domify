@@ -148,7 +148,8 @@ document.head.domify({
   style: {
     'a, button': {
       cursor: 'pointer',
-      color: 'blue'
+      color: 'blue',
+      textDecoration: 'underline'
     } 
   }
 });
