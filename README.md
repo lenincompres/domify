@@ -121,7 +121,7 @@ domify({
 });
 ```
 
-###Possible words that could be interpreted as tags, attributes or styles
+### Words that could be interpreted as tags, attributes or styles
 
 These are treated as a css style, but the effect is the same as the attribute: *border*, *color*, *height*, *width*.
 
