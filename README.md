@@ -72,13 +72,13 @@ domify({
     value: 'default',
     placeholder : 'Type value here',
     style: 'color: "blue"; background-color: "yellow"',
-    onchange: e => console.log(inputator.value)
+    onchange: e => console.log(myField.value)
   },
   button: {
     id: 'goBtn',
     text : 'Go',  // text or innerText, and html or innerHTML.
     class: 'good pill',
-    onclick: e => inputator.value = 'Button pressed'
+    onclick: e => myField.value = 'Button pressed'
   }
 });
 
