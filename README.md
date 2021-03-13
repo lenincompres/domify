@@ -146,7 +146,7 @@ You may assign an object as the style. Use quotes for complex selectors and styl
 ```javascript
 document.head.domify({
   style: {
-    'a, button, .link, link': {
+    'a, button, .link': {
       cursor: 'pointer',
       color: 'blue',
       textDecoration: 'underline'
