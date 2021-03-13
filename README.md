@@ -83,14 +83,14 @@ domify({
     style: {
       color: 'blue',
       backgroundColor: 'yellow'
-    },  // styles may be in an object 
+    },  // styles may be in an object with properties in camelCase
     onclick: e => myField.value = 'Button pressed'
   }
 });
 
 myField.style.border = 'none';
 goBtn.click();
-/* An element objects is created for every id given. */
+/* An element object is created for every id given. */
 ```
 
 You may also access style properties directly.
