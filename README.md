@@ -112,11 +112,11 @@ Style poperties like **border**, **color**, **height**, and **width** are treate
 
 Words like **form**, **label**, **font**, **cite**, **style**, **title** and **span** are treated as tags if the content is a structural object, othewise they are attributes (or style in case of **font**). In the case of **span**, it is only an attribute for the *col* and *colgroup* tags.
 
-Domify will not assign styles to the *document.head* which resolves **content** and **style** props. Also, **title** is always a tag in *document.head*.
+Domify will not assign styles to the *document.head* which resolves conflicts with **content** and **style**. Also, **title** is always a tag in *document.head*.
 
 ## Document.head
 
-You can domify the head element. It applies styles as CSS in the a *style* tag.
+Yes, you can domify the head element. It applies styles as CSS in the a *style* tag.
 
 ```javascript
 document.head.domify({
@@ -201,6 +201,25 @@ domify({
 
 things[1].style.backgroundColor = 'yellow';
 /* Giving the array an id creates an array of elements in the window. */
+```
+
+## Other Uses
+
+Domify allows you to modify attributes and styles in your elements using just this one method.
+
+```javascript
+myElement.domify({
+  padding: '0.5em 2em',
+  backgroundColor: 'lavender'
+});
+
+/* it even works for simple values */
+
+myElement.domify('bold', 'fontWeight');
+
+goBtn.domify('Go', 'text');
+
+goBtn.domify(true, 'disabled');
 ```
 
 ## Have fun!
