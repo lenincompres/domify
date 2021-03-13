@@ -3,7 +3,7 @@
  ** created by: Lenin Compres
  */
 // querystring as object
-const ARGS = (function () {
+const QS = (function () {
   var qs = location.search.substring(1);
   if (!qs) return Object();
   if (qs.includes('=')) return JSON.parse('{"' + decodeURI(location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
@@ -80,4 +80,17 @@ Array.prototype.minus = function (arr = 0) {
 }
 Array.prototype.times = function (arr = 1) {
   return this.map((n, i) => n * (typeof arr === 'number' ? arr : arr[i % arr.length]));
+}
+// This objects calls an onvalue function when its value changes
+class Value{
+  constructor(value, func = () => null){
+    this.onvalue = func;
+    this.value = value;
+  }
+  set value(newVal){
+    this.onvalue(this._value = newVal);
+  }
+  get value(){
+    return this._value;
+  }
 }
