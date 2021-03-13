@@ -127,7 +127,21 @@ Style poperties like **border**, **color**, **height**, and **width** are treate
 
 Words like **form**, **label**, **font**, **cite**, **style**, **title** and **span** are treated as tags if the content is a structural object, othewise they are attributes (or style in case of **font**). In the case of **span**, it is only an attribute for the *col* and *colgroup* tags.
 
-Domify will not assign styles to the *document.head* which resolves **content** and **style** props. Also, **title** is a tag only in *document.head* and aan attribute otherwise.
+Domify will not assign styles to the *document.head* which resolves **content** and **style** props. Also, **title** is a tag only in *document.head* and an attribute otherwise.
+
+## Document.head
+
+You can domify the head element.
+
+```javascript
+document.head.domify({
+  meta: {
+    charset: 'UTF-8'
+  },
+  title: 'A domify example',
+  style: 'a, button {cursor: pointer; color: navy}'
+});
+```
 
 ## Unique Property Names
 
