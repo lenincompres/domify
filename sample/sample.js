@@ -1,6 +1,4 @@
-/*-------------
-  DOM structure
-  -------------*/
+/*------------- DOM structure  -------------*/
 
 domify({ 
   background: 'gray',
@@ -80,9 +78,7 @@ document.head.domify({
 });
 
 
-/*----------------------
-  Event Handling Methods
-  ----------------------*/
+/*------------  Event Handling Methods  ------------*/
 
 function doToggle(show) {
   // domify can change simple single values
