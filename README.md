@@ -93,13 +93,12 @@ Style may be assign as an object; and classes as an array
 domify({
   input: {
     id: inputator,
-    style: {  // 
+    style: {
       color: 'blue',
       backgroundColor: 'yellow'
     }
   },
   button: {
-    id: 'buttonator',
     text : 'Go',
     class: ['good', 'pill'],
     onclick: e => inputator.value = 'Button pressed'
