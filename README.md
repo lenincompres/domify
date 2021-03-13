@@ -126,11 +126,11 @@ Style poperties like **border**, **color**, **height**, and **width** are treate
 
 Words like **form**, **label**, **font**, **cite**, **style**, **title** and **span** are treated as tags if the content is a structural object, othewise they are attributes (or style in case of **font**). In the case of **span**, it is only an attribute for the *col* and *colgroup* tags.
 
-Domify will not assign styles to the *document.head* which resolves **content** and **style** props. Also, **title** is a tag only in *document.head* and an attribute otherwise.
+Domify will not assign styles to the *document.head* which resolves **content** and **style** props. Also, **title** is always a tag in *document.head*.
 
 ## Document.head
 
-You can domify the head element.
+You can domify the head element. It applies styles as CSS in the a *style* tag.
 
 ```javascript
 document.head.domify({
@@ -141,12 +141,12 @@ document.head.domify({
   style: 'a, button {cursor: pointer; color: navy}'
 });
 ```
-You may declare css styles in the *document.head* assigning an object as well. Complex selectors and style values should be in quotes.
+You may assign an object as the style. Use quotes for complex selectors and style values.
 
 ```javascript
 document.head.domify({
   style: {
-    'a, button': {
+    'a, button, .link, link': {
       cursor: 'pointer',
       color: 'blue',
       textDecoration: 'underline'
