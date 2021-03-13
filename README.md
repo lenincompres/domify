@@ -63,7 +63,7 @@ someElement.domify({
 
 ## Attributes
 
-Domify recognizes propertinames of element attributes and event handlers.
+Domify recognizes property names of element attributes and event handlers.
 
 ```javascript
 domify({
@@ -87,26 +87,68 @@ buttonator.click();
 /* An element objects is created for every id given. */
 ```
 
-You may also assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
+Style may be assign as an object; and classes as an array
 
 ```javascript
 domify({
-  input_inputator: {
-    style: {  // May assign styles as an object.
+  input: {
+    id: inputator,
+    style: {  // 
       color: 'blue',
       backgroundColor: 'yellow'
     }
   },
-  buttonator: {
-    tag: 'button',  // _id and _tag properties replace those interpreted from the name.
+  button: {
+    id: 'buttonator',
     text : 'Go',
-    class: ['good', 'pill'],  // You may assign classes with an array
+    class: ['good', 'pill'],
     onclick: e => inputator.value = 'Button pressed'
   }
 });
+```
 
-buttonator.click();
-/* If a property is named something other than a tag, it will interpred this as an id and assume a div tag. */
+You may also change style variable directly.
+
+```javascript
+domify({
+  input: {
+    id: inputator,
+    color: 'blue',
+    backgroundColor: 'yellow'
+    value: 'content'
+  }
+  ...
+});
+```
+
+###Possible words that could be interpreted as tags, attributes or styles
+
+These are treated as a css style, but the effect is the same as the attribute: *border*, *color*, *height*, *width*.
+
+These are treated as tags if the content is a structural object: "form", "label", "font", "cite", "style", "title", "span".
+If it is a string, boolean or number, they are attributes (or slyle for "font")
+* "span" is an attribute only on "col" and "colgroup" tags.
+
+Domify will not assign styles to the document.head and will only see "style" as a tag, which resolves *content* and *style* 
+Also, *title* is a tag only in document.head.
+
+## Unique Property Names
+
+You may  assign id\'s in the property\'s name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
+And if a property is named something other than a tag, sttribute of style, it will interpred this as an id and assume a div tag.
+
+```javascript
+domify({
+  input_inputator: {
+    color: 'blue',
+    backgroundColor: 'yellow'
+  },
+  buttonator: {
+    tag: 'button',  // _id and _tag properties replace those interpreted from the name.
+    text : 'Go',
+    onclick: e => inputator.value = 'Button pressed'
+  }
+});
 ```
 
 Classes may also be indicated in the property\'s name after the id, by separating them with underscores (\_). Example: *p_id_class1_class2*.
