@@ -29,7 +29,7 @@ domify({
   p: 'This <b>is</b> a paragraph.'
 }, someElement, true);
 
-/* A boolean argument will indicate if any existing content should be removed. */
+/* A boolean argument will indicate if the new elements should be appened (true) or prepended (false). If there's no boolean argument, the content of the element will be replaced by the new structure. */
 ```
 
 You may also provide a String to use as tag of a new element where the dom structure will be created.
@@ -38,7 +38,7 @@ You may also provide a String to use as tag of a new element where the dom struc
 domify({
   h1: 'Hello world',
   p: 'This is <b>a</b> paragraph.'
-}, 'main', someElement, true);
+}, 'main', someElement, false);
 
 /* Creates a main element with the domified structure. Returns this main element. */
 ```
@@ -52,7 +52,7 @@ Aditionally, you can call *domify* as an Element method.
 someElement.domify({
   h1: 'Hello world',
   p: 'This is a <b>paragraph</b>.'
-}, true);
+});
 ```
 or 
 
@@ -60,7 +60,7 @@ or
 someElement.domify({
   h1: 'Hello world',
   p: 'This is a paragraph.'
-}, 'main', true);
+}, 'main');
 ```
 
 ## Attributes
@@ -105,6 +105,7 @@ domify({
   }
   ...
 });
+/* If the domify only contains attributes and styles (no new content), the innerHTML of the element remains the same. */
 ```
 
 ### What about words that could be interpreted as tags, attributes or styles?
