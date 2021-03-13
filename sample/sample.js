@@ -70,7 +70,8 @@ document.head.domify({
       textDecoration: 'underline'
     },
     button: {
-      minWidth: '6em',
+      minWidth: '5em',
+      borderRadius: '0.4em'
     },
     'h1, p': {
       margin: '0.5em 0'
