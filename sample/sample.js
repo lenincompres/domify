@@ -1,4 +1,4 @@
-/*------------- DOM structure  -------------*/
+t/*------------- DOM structure  -------------*/
 
 domify({ 
   background: 'gray',
@@ -86,7 +86,7 @@ function doToggle(show) {
   
   // modify is domify
   toggleBtn.modify({
-    innerText: show ? 'Hide' : 'Show',
+    text: show ? 'Hide' : 'Show',
     background: show ? 'lavender' : 'royalblue',
     color: show ? 'royalblue' : 'white',
     onclick: e => doToggle(!show)
