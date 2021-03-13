@@ -141,7 +141,7 @@ document.head.domify({
 });
 ```
 
-## Unique Property Names
+## Unique Names
 
 You may  assign id\'s in the property name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
 If the name is not recognizable (as a tag, attribute or style), it is interpred as an id and assumed a div tag.
@@ -174,7 +174,7 @@ domify({
 });
 ```
 
-## Element arrays
+## Element Arrays
 
 Use arrays to create multiple alements of the same tag
 
