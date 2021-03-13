@@ -169,7 +169,7 @@ domify({
     html: 'The button <b>does</b> the <i>thing</i>.'
   },
   button_doThing_good_pill: {
-    text: 'Go'
+    text: 'Go',
     class: 'warning' // Classes in a _class property are added to the ones interpreted in the name.
   }
 });
