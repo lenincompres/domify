@@ -107,7 +107,7 @@ domify({
 });
 ```
 
-### What those about words that could be interpreted as tags, attributes or styles?
+### What about words that could be interpreted as tags, attributes or styles?
 
 Style poperties like **border**, **color**, **height**, and **width** are treated as a css style, not attributes.
 
