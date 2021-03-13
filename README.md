@@ -219,7 +219,8 @@ myElement.domify('bold', 'fontWeight');
 
 goBtn.domify('Go', 'text');
 
-goBtn.domify(true, 'disabled');
+goBtn.modify(true, 'disabled');
+/* This is not a typo. The *domify* method is also the *modify* method for Elements. */
 ```
 
 ## Have fun!
