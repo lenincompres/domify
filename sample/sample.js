@@ -1,4 +1,6 @@
-// If not called as an element's method, domify assumes the document.body element.
+/*-------------
+  DOM structure
+  -------------*/
 
 domify({ 
   background: 'gray',
@@ -16,8 +18,7 @@ domify({
       button: {
         id: 'toggleBtn',
         text: 'Hide',
-        minWidth: '6em',
-        onclick: doToggle
+        onclick: e => doToggle(false)
       },
     },
     article: {
@@ -25,13 +26,14 @@ domify({
       margin: '2em',
       p: 'Content:',
       ul : {
+        marginLeft: '1.5em',
         li_list : [
           'You may do',
           {
             span: 'the ',
             a: {
               text: 'toggle',
-              onclick: doToggle
+              onclick: e => doToggle(false)
             }
           },
           'for this section'
@@ -44,48 +46,54 @@ domify({
       color: 'white',
       text: 'Lenin Comprés'
     }
-  }
+  },
 });
-
+// Unless called as an element's method, domify assumes the document.body element.
 
 // You can domify the head element
-
 document.head.domify({
-  title: 'A domify example',
+  title: 'A Domify Simple Sample',
   meta: {
     charset: 'UTF-8'
   }, 
   style: {
+    '*': {
+      margin: 0,
+      padding: 0,
+      boxSizing: 'border',
+    },
     'a, button': {
       cursor: 'pointer',
       color: 'blue',
     } ,
     a: {
       textDecoration: 'underline'
+    },
+    button: {
+      minWidth: '6em',
+    },
+    'h1, p': {
+      margin: '0.5em 0'
     }
   }
 });
 
 
-/* --------------------
-event handling method 
------------------------- */
+/*----------------------
+  Event Handling Methods
+  ----------------------*/
 
-let showing;
-
-function doToggle() {
-  showing = !showing;
-  
-  // domify can change a simple single value
-  infoArt.domify(showing ? 'block' : 'none', 'display');
+function doToggle(show) {
+  // domify can change simple single values
+  infoArt.domify(show ? 'block' : 'none', 'display');
   
   // modify is domify
   toggleBtn.modify({
-    innerText: showing ? 'Hide' : 'Show',
-    background: showing ? 'lavender' : 'royalblue',
-    color: showing ? 'royalblue' : 'white'
+    innerText: show ? 'Hide' : 'Show',
+    background: show ? 'lavender' : 'royalblue',
+    color: show ? 'royalblue' : 'white',
+    onclick: e => doToggle(!show)
   });
-  
 }
 
-doToggle();
+doToggle(true);
