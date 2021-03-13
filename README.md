@@ -126,7 +126,8 @@ domify({
 *border*, *color*, *height*, *width* are treated as a css style, but the effect is the same as the attribute.
 
 *form*, *label*, *font*, *cite*, *style*, *title*, *span* are treated as tags if the content is a structural object.
-If it is a string, boolean or number, they are attributes (or slyle for *font*)
+Othewise they are attributes (or style for *font*)
+
 *span* is an attribute only on *col* and *colgroup* tags.
 
 Domify will not assign styles to the document.head and will only see "style" as a tag, which resolves *content* and *style* 
