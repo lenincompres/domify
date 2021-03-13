@@ -46,7 +46,7 @@ domify({
 **Domify is agnostic about the order of the arguments that follow the first one: 
 A boolean is a flag to clear the element. A String is a the tag for a new element. An element is where it should be created.**
 
-You can call *domify* as an Element method.
+Aditionally, you can call *domify* as an Element method.
 
 ```javascript
 someElement.domify({
