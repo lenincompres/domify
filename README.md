@@ -155,7 +155,7 @@ domify({
     backgroundColor: 'yellow'
   },
   buttonator: {
-    tag: 'button',  // _id and _tag properties replace those interpreted from the name.
+    tag: 'button',  // id and tag properties replace those interpreted from the name.
     text : 'Go',
     onclick: e => inputator.value = 'Button pressed'
   }
