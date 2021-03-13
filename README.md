@@ -141,6 +141,18 @@ document.head.domify({
   style: 'a, button {cursor: pointer; color: navy}'
 });
 ```
+You may declare css styles in the *document.head* assigning an object as well. Complex selectors and style values should be in quotes.
+
+```javascript
+document.head.domify({
+  style: {
+    'a, button': {
+      cursor: 'pointer',
+      color: 'blue'
+    } 
+  }
+});
+```
 
 ## Unique Property Names
 
