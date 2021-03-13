@@ -112,7 +112,7 @@ domify({
 
 Style poperties like **border**, **color**, **height**, and **width** are treated as a css style, not attributes.
 
-Words like **form**, **label**, **font**, **cite**, **style**, **title** and **span** are treated as tags if the content is a structural object, othewise they are attributes (or style in case of **font**). In the case of **span**, it is only an attribute for the *col* and *colgroup* tags.
+Words like **form**, **label**, **font**, **cite**, **style**, **title** and **span** are treated as tags if the content is a structural object, othewise they are attributes (or style in case of **font**). In the case of **span**, it is only an attribute for the *col* and *colgroup* tags, as **label** is for *track*.
 
 Domify will not assign styles to the *document.head* which resolves conflicts with **content** and **style**. Also, **title** is always a tag in *document.head*.
 
