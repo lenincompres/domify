@@ -29,11 +29,10 @@ domify({
   p: 'This <b>is</b> a paragraph.'
 }, someElement, true);
 
-/* Creates the domified structure inside someElement. Returns someElement.
-A boolean as a last argument indicates if the existing content should be replaced. */
+/* A boolean argument will indicate if any existing content should be removed. */
 ```
 
-You may also indicate a tag where the dom structure should be added within the element.
+You may also provide a String to use as tag of a new element where the dom structure will be created.
 
 ```javascript
 domify({
@@ -44,7 +43,9 @@ domify({
 /* Creates a main element with the domified structure. Returns this main element. */
 ```
 
-You can also call *domify* as an Element object method.
+*Domify is agnostic about the order of the arguments that follow model scturture the (first one). A boolean is a flag to clear the element. A String is a the tag of a new element to create. An element is where it should be created.*
+
+You can call *domify* as an Element method.
 
 ```javascript
 someElement.domify({
@@ -71,13 +72,18 @@ domify({
     id: 'myField',
     value: 'default',
     placeholder : 'Type value here',
+    class: 'good field',
     style: 'color: "blue"; background-color: "yellow"',
     onchange: e => console.log(myField.value)
   },
   button: {
     id: 'goBtn',
     text : 'Go',  // text or innerText, and html or innerHTML.
-    class: 'good pill',
+    class: ['btn', 'btn-warning'], // classes may be in an array
+    style: {
+      color: 'blue',
+      backgroundColor: 'yellow'
+    },  // styles may be in an object 
     onclick: e => myField.value = 'Button pressed'
   }
 });
@@ -87,26 +93,7 @@ goBtn.click();
 /* An element objects is created for every id given. */
 ```
 
-Style may be assign as an object; and classes as an array
-
-```javascript
-domify({
-  input: {
-    id: myField,
-    style: {
-      color: 'blue',
-      backgroundColor: 'yellow'
-    }
-  },
-  button: {
-    text : 'Go',
-    class: ['good', 'pill'],
-    onclick: e => myField.value = 'Button pressed'
-  }
-});
-```
-
-You may also change style variable directly.
+You may also access style properties directly.
 
 ```javascript
 domify({
@@ -114,7 +101,6 @@ domify({
     id: myField,
     color: 'blue',
     backgroundColor: 'yellow'
-    value: 'content'
   }
   ...
 });
