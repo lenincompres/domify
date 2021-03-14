@@ -77,7 +77,7 @@ domify({
       color: 'blue',
       backgroundColor: 'yellow'
     },  // styles may be in an object with properties in camelCase
-    onclick: e => myField.value = 'Button pressed'
+    addEvent: ['click', e => myField.value = 'Button pressed'] // Event listeners can be set up with addEvent or addEventListener
   }
 });
 
