@@ -29,7 +29,7 @@ domify({
   p: 'This <b>is</b> a paragraph.'
 }, someElement, true);
 
-/* A boolean argument will indicate if the new elements should be appened (true) or prepended (false). If there's no boolean argument, the content of the element will be replaced by the new structure. */
+/* A *true* boolean indicates the new structure should **replace** any existing one in the element. Specify *false* to **prepend** the struture instead of the default **append** mode. */
 ```
 
 You may also provide a String to use as tag of a new element where the dom structure will be created.
@@ -40,7 +40,7 @@ domify({
   p: 'This is <b>a</b> paragraph.'
 }, 'main', someElement, false);
 
-/* Creates a main element with the domified structure. Returns this main element. */
+/* Creates a main element with the domified structure. Returns this main element, and **prepends** it in *someElement*. */
 ```
 
 **Domify is agnostic about the order of the arguments that follow the first one: 
@@ -52,15 +52,7 @@ Aditionally, you can call *domify* as an Element method.
 someElement.domify({
   h1: 'Hello world',
   p: 'This is a <b>paragraph</b>.'
-});
-```
-or 
-
-```javascript
-someElement.domify({
-  h1: 'Hello world',
-  p: 'This is a paragraph.'
-}, 'main');
+}, 'main', true);
 ```
 
 ## Attributes
