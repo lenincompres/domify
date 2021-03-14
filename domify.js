@@ -10,9 +10,9 @@
    if (['tag', 'id', 'onready', 'onReady'].includes(station)) return;
    let clear = getFirst(a => typeof a === 'boolean');
    let prepend = clear === false;
-   let elem = getFirst(a => a && a.tagName);
+   let elt = getFirst(a => a && a.tagName);
    let p5Elem = getFirst(a => a && a.elt);
-   if (elem) return elem.domify(structure, station, clear, p5Elem);
+   if (elt) return elt.domify(structure, station, clear, p5Elem);
    if (!station) {
      if (clear) this.innerHTML = '';
      let keys = prepend ? Object.keys(structure).reverse() : Object.keys(structure);
@@ -44,7 +44,7 @@
    }
    if (tag.includes('#'))[tag, id] = tag.split('#');
    tag = structure.tag ? structure.tag : tag;
-   elem = (structure.tagName || structure.elt) ? structure : false;
+   let elem = (structure.tagName || structure.elt) ? structure : false;
    if (!elem) {
      if (!['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9', 'h10', 'main', 'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map', 'mark', 'meta', 'meter', 'menu', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'progress', 'q', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'u', 'ul', 'var', 'video', 'wbr'].includes(tag.toLowerCase())) {
        id = tag;
@@ -57,21 +57,22 @@
        else Object.keys(structure).map(key => elem.domify(structure[key], key));
      }
    }
+   elt = (p5Elem ? elem.elt : elem);
    // id and appending element
    if (id = structure.id ? structure.id : id) {
-     if (!IS_ARRAY) elem && p5Elem ? elem.id(id) : elem.setAttribute('id', id);
+     if (!IS_ARRAY) elem && elt.setAttribute('id', id);
      window[id] = elem;
    }
    if (IS_ARRAY) return;
-   if (cls) cls.forEach(c => p5Elem ? elem.addClass(c) : elem.classList.add(c));
+   if (cls) cls.forEach(c => elt.classList.add(c));
    let onready = structure.onready ? structure.onready : structure.onReady;
    if (onready) onready(elem);
-   p5Elem ? p5Elem.child(elem) : this[prepend ? 'prepend' : 'append'](elem);
+   this[prepend ? 'prepend' : 'append'](elt);
    return elem;
  };
  String.prototype.camelCase = function (s = false) {
    return s ? this.replace(/([A-Z])/g, s + '$1').toLowerCase() : this.replace(/^([A-Z])|[\s-_ ]+(\w)/g, (match, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase());
- }
+ };
  if (typeof p5 !== 'undefined') {
    p5.domify = (...args) => domify(...args, createDiv());
    p5.Element.prototype.domify = p5.Element.prototype.modify = function (...args) {
