@@ -218,4 +218,22 @@ goBtn.modify(true, 'disabled');
 
 This last line of code is not a typo. The **domify** method is also the **modify** method for Elements.
 
+## P5 JS
+
+Domify works with p5. When called from a p5.Element, all new element created are p5.Elements.
+
+```javascript
+
+p5.domify({
+  h1: 'Hello world',
+  p: 'This is a paragraph.'
+);
+
+p5Element.domify({
+  h1: 'Hello world',
+  p: 'This is a paragraph.'
+});
+
+```
+
 ## Have fun!
