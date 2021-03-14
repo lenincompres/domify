@@ -31,7 +31,7 @@ domify({
             span: 'the ',
             a: {
               text: 'toggle',
-              onclick: e => doToggle(false)
+              addEvent: ['click', e => doToggle(false)]
             }
           },
           'for this section'
