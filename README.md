@@ -220,7 +220,7 @@ This last line of code is not a typo. The **domify** method is also the **modify
 
 ## P5 JS
 
-Domify works with p5. When called from a p5.Element, all new elements given an id are p5.Elements.
+When called from a p5.Element os as p5.domify, all new elements given with an id are created as p5.Elements. 
 
 ```javascript
 p5Element.domify({
@@ -231,8 +231,9 @@ p5Element.domify({
 p5.domify({
   h1: 'Hello world',
   button: {
-    ig: goBtn,
-    text: 'Go'
+    id: goBtn,
+    text: 'Go',
+    mouseClicked: handlerFunction
   }
 );
 /* goBtn is a p5 Element. */
