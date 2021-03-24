@@ -1,7 +1,7 @@
 # Domify
 by Lenin Compres
 
-The *domify* function creates DOM elements from a provided JS object sturcture. By default the elements are appended to the *document.body*.
+The domify function creates the DOM elements in the document.body. If called before the body is loaded, it will listen fo the onload event to execute. It returns the container element, in this case document.body.
 
 ```javascript
 domify({
@@ -18,184 +18,272 @@ domify({
     p: 'Made with domify'
   }
 });
-
-/* It returns the container element, in this case document.body. */
 ```
-You may provide the element where it should be created as the following argument.
+You may provide the element where the structure should be created as the following argument.
 
 ```javascript
 domify({
-  h1: 'Hello world',
-  p: 'This <b>is</b> a paragraph.'
-}, someElement, true);
-
-/* A *true* boolean indicates the new structure should **replace** any existing one in the element. Specify *false* to **prepend** the struture instead of the default **append** mode. */
+    h1: 'Hello world',
+    p: 'This <b>is</b> a paragraph.'
+  }, someElement, true);
 ```
 
-You may also provide a String to use as tag of a new element where the dom structure will be created.
+A true boolean will indicate the new structure should replace any existing one in the element, instead of the default append mode. Specifying false here will prepend the struture instead.
+
+You may also provide a string to indicate the tag of a new element where the DOM structure will be created. The following example creates a main element with the domified structure. It returns this main element, and prepends it in someElement.
 
 ```javascript
 domify({
   h1: 'Hello world',
   p: 'This is <b>a</b> paragraph.'
-}, 'main', someElement, false);
-
-/* Creates a main element with the domified structure. Returns this main element, and **prepends** it in *someElement*. */
+}, 'main', someElement);
 ```
 
-**Domify is agnostic about the order of the arguments that follow the first one: 
-A boolean is a flag to clear the element. A String is a the tag for a new element. An element is where it should be created.**
-
-Aditionally, you can call *domify* as an Element method.
+Domify is agnostic about the order of the arguments that follow the first one: A boolean is a flag to clear the element. A String is a the tag for a new element. An element is where it should be created. Aditionally, you can call domify as an Element method.
 
 ```javascript
 someElement.domify({
   h1: 'Hello world',
   p: 'This is a <b>paragraph</b>.'
-}, 'main', true);
+}, 'main');
 ```
 
-## Attributes
+## Global elements and element id
 
-Domify recognizes property names of element attributes and event handlers.
+Domify recognizes property names of element attributes and event handlers. See if you can find the following in the code.
+
+* Use text: or innerText:, and content:, html: or innerHTML: for the element's content.
+* Add event listeners with their arguments in an array.
+* Give elements an id to create global elements with that name.
 
 ```javascript
 domify({
   input: {
-    id: 'myField',
-    value: 'default',
-    placeholder : 'Type value here',
-    class: 'good field',
-    style: 'color: blue; background-color: yellow',
-    onchange: e => console.log(myField.value)
+    id: 'myInput',
+    placeholder: 'Type value here',
+    onchange: e => alert(myInput.value)
   },
   button: {
     id: 'goBtn',
-    text : 'Go',  // text or innerText, and html or innerHTML.
-    class: ['btn', 'btn-warning'], // classes may be in an array
-    style: {
-      color: 'blue',
-      backgroundColor: 'yellow'
-    },  // styles may be in an object with properties in camelCase
-    addEvent: ['click', e => myField.value = 'Button pressed'] // Event listeners can be set up with addEvent or addEventListener
+    text : 'Go',
+    addEventListener: ['click', e => myInput.value = 'Button pressed']
   }
 });
 
-myField.style.border = 'none';
+myInput.style.border = 'none';
 goBtn.click();
-/* An element object is created for every id given. */
 ```
 
-You may also access style properties directly.
-
-```javascript
-domify({
-  input: {
-    id: myField,
-    color: 'blue',
-    backgroundColor: 'yellow'
-  }
-  ...
-});
-/* If the domify only contains attributes and styles (no new content), the innerHTML of the element remains the same. */
-```
-
-### What about words that could be interpreted as tags, attributes or styles?
-
-Style poperties like **border**, **color**, **height**, and **width** are treated as a css style, not attributes.
-
-Words like **form**, **label**, **font**, **cite**, **style**, **title** and **span** are treated as tags if the content is a structural object, othewise they are attributes (or style in case of **font**). In the case of **span**, it is only an attribute for the *col* and *colgroup* tags, as **label** is for *track*.
-
-Domify will not assign styles to the *document.head* which resolves conflicts with **content** and **style**. Also, **title** is always a tag in *document.head*.
-
-## Document.head
-
-Yes, you can domify the head element. It applies styles as CSS in the a *style* tag.
-
-```javascript
-document.head.domify({
-  meta: {
-    charset: 'UTF-8'
-  },
-  title: 'A domify example',
-  style: 'a, button {cursor: pointer; color: navy}'
-});
-```
-You may assign an object as the style. Use quotes for complex selectors and style values.
-
-```javascript
-document.head.domify({
-  style: {
-    'a, button, .link': {
-      cursor: 'pointer',
-      color: 'blue',
-      textDecoration: 'underline'
-    } 
-  }
-});
-```
-
-## Unique Names
-
-You may  assign id\'s in the property name by separating it from the tag with an underscore (\_). Example: *div_mainField*.
-If the name is not recognizable (as a tag, attribute or style), it is interpred as an id and assumed a div tag.
+You may assign id's in the property name by separating it from the tag with an underscore (_). Example: div_mainField:, this will create a div element with an id of mainField. Also, if a name is not identified as a tag, attribute or style, domify interprets it as an id and assumes a div tag. Any id or tag property will replace those interpreted from the name.
 
 ```javascript
 domify({
   input_myField: {
-    color: 'blue',
-    backgroundColor: 'yellow'
+    placeholder: 'Type value here',
   },
   goBtn: {
-    tag: 'button',  // id and tag properties replace those interpreted from the name.
+    tag: 'button',
     text : 'Go',
     onclick: e => myField.value = 'Button pressed'
   }
 });
+
+myInput.style.border = 'none';
+goBtn.click();
+```
+Also, if a name is preceded by an underscore, domify understand this as a div element. So, _mainField will create a div element with an id and variable named mainField.
+
+Domify also adds a class to the element for every word in its name after an underscore (including the id). Then button_acceptDeal_hotStyle_largeButton creates a button element with an id and variable name of acceptDeal, and the classes of acceptDeal, hotStyle and largeButton. Something like __bright will create a div with a class of bright and no id
+
+### Array of elements
+
+Use arrays to create multiple alements of the same tag. Giving the array an id (using the underscore method) creates a global array that holds these elements.
+
+```javasript
+domify({
+  ul: {
+    li_listedThings: [
+      'first item',
+      'second item',
+      'a third for good meassure'
+    ]
+  }
+});
+
+listedThings[1].style.backgroundColor = 'yellow';
 ```
 
-Classes may also be indicated in the property\'s name after the id, by separating them with underscores (\_). Example: *p_id_class1_class2*.
+## There are several ways to style elements with domify
+
+If a style property is assigned a string, this is placed verbatim in the attribute of the element, and replace anything previously there.
 
 ```javascript
-domify({
-  p__pretty: {  // Use double underscores to omit an id and still indicate classes.
-    html: 'The button <b>does</b> the <i>thing</i>.'
-  },
-  button_doThing_good_pill: {
-    text: 'Go',
-    class: 'warning' // Classes in a _class property are added to the ones interpreted in the name.
+document.body.domify({
+  main:{
+    style: 'margin: 20px; font-family: Tahoma; background-color: gray;',
+    content: 'This style is in the attribute of this main element.'
+  }
+});
+```
+The style property may be an object holding properties and their values, using their JS names (in camelCase).
+
+```javascript
+document.body.domify({
+  main:{
+    style: {
+      margin: '20px',
+      fontFamily: 'Tahoma',
+      backgroundColor: 'gray'
+    },
+    content: 'This assign the style values directly to the properties.'
   }
 });
 ```
 
-## Element Arrays
+You may also assign individual style properties (in camelCase) directly—without wrapping them in a style object.
 
-Use arrays to create multiple alements of the same tag
+```javascript
+document.body.domify({
+  main:{
+    margin: '20px',
+    fontFamily: 'Tahoma',
+    backgroundColor: 'gray',
+    content: 'This delivers the same results.'
+  }
+});
+```
+
+If the style is an object with a content, this will create a style tag with proper CSS language in it. It applies the styling to the whole page using selectors.
+
+```javascript
+document.body.domify({
+  main:{
+    style: {
+      lang: 'css',
+      content: 'main { margin: 20px; font-family: Tahoma; color:gray; }';
+    },
+    content: 'This style is applied to all main tags in the page.'
+  }
+});
+```
+
+It is recommended to only do this in the head element. You may also take advantage of domify interpreting JS structural objects into CSS—nesting and all.
+
+```javascript
+document.head.domify({
+  style: {
+    lang: 'css',
+    content: {
+      main { 
+        margin: '20px',
+        fontFamily: 'Tahoma',
+        color: 'gray'
+      },
+      'p, article>*': {
+        margin: '2em'
+      },
+      nav: {
+        a: {
+          color: 'blue',
+          hover: {
+            backgroundColor: 'yellow'
+          }
+        }
+      }
+    }
+  }
+};
+```
+
+Domify recognizes pseudo-elements and pseudo-classes. And selectors written with underscores (_) are interpreted as such: tag_idName_className_extraClass. In this sense _myImput will be an id (#myInput), and __warning a class (.warning). Something like menu_topMenu_cloud_intense becomes menu#topMenu.cloud.intense.
+
+## Initializing
+
+Just as any other element, you may domify the head element. For example:
+
+```javascript
+document.head.domify({
+  title: 'Title of the webpage',
+  meta: {
+    charset: 'UTF-8'
+  },
+  link : [{
+    rel: 'icon',
+    href: 'icon.ico'
+  }, {
+    rel: 'style',
+    href: 'style.css'
+  }], 
+  style: {
+    type: 'css',
+    content: CSS
+  },
+  script: {
+    type: 'module',
+    src: 'main.js' 
+  }
+}, true);
+```
+
+The domify library will initialize the head if it finds an ini.json file in the root folder. This can contain any of the following properies to replace their default values. These are the default values.
+
+```javascript
+{
+  "title": "A Domified Site",
+  "viewport": "width=device-width, initial-scale=1.0",
+  "charset": "UTF-8",
+  "icon": "assets/icon.ico",
+  "meta": [],
+  "resetCSS": true,
+  "style": [],
+  "link": [],
+  "script": [],
+  "entryPoint": "main.js",
+  "module": true,
+  "postscript": []
+}
+```
+
+The meta, link, script, postscript and style may be a single object or an array of these elements. The script gets added to the head—before the entry point—, while postscript get added in the body after the entry point.
+
+## Binding
+
+Any element's attribute, content, styling, can be bound to a blobal object. When the value property of this variable changes, it will automatically update all elements bound to it. To create a bind assign a dombind call to the element property with the name of the object to bind. If this object does not exist, the bind will create it.
 
 ```javascript
 domify({
-  ul: {
-    style: 'margin:2em',
-    li: [
-      'first item',
-      'second item'
-    ]
+  input: {
+    value: dombind('myBindVar'),
+    placeholder: 'This will change',
   },
-  article_things: [
-    {
-      h2: 'Article 1 title',
-      p: 'Article 1 paragraph.'
-    },
-    {
-      h2: 'Article 2 title',
-      p: 'Article 2 paragraph.'
-    }
-  ]
+  button: {
+    text : 'Go',
+    onclick: e => myBindVar.value = 'Button pressed'
+  }
 });
-
-things[1].style.backgroundColor = 'yellow';
-/* Giving the array an id creates an array of elements in the window. */
 ```
+
+You may also give the dombind a function to be called whenever the value is changed. This function should return the correct value to assign to the element's property.
+
+```javascript
+domify({
+  div: {
+    padding: '20px',
+    background: dombind('enabledField', value => value ? 'lime': 'red', true)
+    },
+    input: {
+      enabled: dombind('enabledField'),
+      value: dombind('enabledField', value => value ? 'Enabled' : 'Disabled')
+    }
+    button : {
+      text: 'toggle',
+      onclick: () => enabledField.value = !enabledField.value
+    }
+  }
+});
+```
+
+You may also give dombind a default value for the bind. In this case that value was true. Domify is agnostic about the order of the onvalue function and the default value passed after the name of the bind.
 
 ## Other Uses
 
