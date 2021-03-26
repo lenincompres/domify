@@ -7,18 +7,12 @@
 
  Element.prototype.domify = Element.prototype.modify = function (structure, ...args) {
    if ([null, undefined].includes(structure)) return;
-   let station = args.filter(a => typeof a === 'string')[0]; // style|attribute|tag|inner…|onEvent|name
+   let station = args.filter(a => typeof a === 'string')[0]; // style|attr|tag|inner…|onEvent|name
    if (['tag', 'id', 'onready', 'onReady'].includes(station)) return;
-   if (typeof structure == 'string' && structure.endsWith('.json')) return domload(structure, data => this.domify(data, ...args), error => console.log(structure, 'Could not load JSON file.'));
+   if (typeof structure == 'string' && structure.endsWith('.json')) return domloadRequest(structure, data => this.domify(data, ...args), error => console.log(structure, 'Could not load JSON file.'));
    const IS_PRIMITIVE = isPrimitive(structure);
    const IS_FUNCTION = typeof structure === 'function';
    const IS_ARRAY = Array.isArray(structure);
-   if (!IS_FUNCTION && structure.bind) {
-     if (!window[structure.bind]) window[structure.bind] = new Bind();
-     window[structure.bind].bind(this, station, structure.onvalue);
-     if (structure.value !== undefined) window[structure.bind].value = structure.value;
-     return;
-   }
    const TAG = this.tagName.toLowerCase();
    const IS_HEAD = TAG === 'head';
    const CLEAR = args.filter(a => typeof a === 'boolean')[0];
@@ -32,32 +26,51 @@
      keys.forEach(key => this.domify(structure[key], key, p5Elem, PREPEND ? false : undefined));
      return this;
    }
-   if (station === 'style') {
-     if (IS_ARRAY) return structure.forEach(s => this.domify(s, station));
-     if (IS_HEAD || structure.lang || structure.content) {
-       station = 'styleSheet';
-       if (!IS_PRIMITIVE) {
-         if (structure.content && !isPrimitive(structure.content)) structure.content = domifyCSS(structure.content);
-         else return this.domify(domifyCSS(structure), station);
-       }
-     } else {
-       if (IS_PRIMITIVE) return this.setAttribute(station, structure);
-       if (CLEAR) this.style = '';
-       return Object.keys(structure).forEach(k => this.style[k] = structure[k]);
-     }
+   let [tag, ...cls] = station.split('_');
+   let id = cls[0];
+   if (station.includes('.')) {
+     cls = station.split('.');
+     tag = cls.shift();
    }
-   if (TAG !== 'meta' && ['content', 'html', 'innerHTML'].includes(station)) return IS_PRIMITIVE ? this.innerHTML = structure : this.domify(structure, true);
-   if (['text', 'innerText'].includes(station)) return this.innerText = structure;
+   if (tag.includes('#'))[tag, id] = tag.split('#');
+   tag = (structure.tag ? structure.tag : tag).toLowerCase();
    if (IS_ARRAY) {
      if (station === 'class') return structure.forEach(c => c ? this.classList.add(c) : null);
      if (station === 'addEventListener') return this.addEventListener(...structure);
-   } else if (IS_FUNCTION) {
-     if (this[station] !== undefined) {
-       this[station] = structure;
+     let map = structure.map(s => this.domify(s, tag + '.' + cls.join('.')));
+     if (id) window[id] = map;
+     return
+   }
+   if (structure.bind && !IS_FUNCTION) {
+     if (!HTML_TAGS.includes(tag)) {
+       structure.bind.bind(this, station, structure.onvalue);
+       if (structure.value !== undefined) structure.bind.value = structure.value;
        return;
      }
+     structure = {
+       content: structure
+     }
+   }
+   if (tag === 'style') {
+     if (IS_PRIMITIVE && !IS_HEAD) return this.setAttribute(tag, structure);
+     if (IS_HEAD && !structure.content) {
+       structure = {
+         content: structure
+       };
+     }
+     if (!structure.content) {
+       if (CLEAR) this.style = '';
+       return Object.keys(structure).forEach(k => this.style[k] = structure[k]);
+     }
+     if (!isPrimitive(structure.content)) structure.content = domifyCSS(structure.content);
+   }
+   if (IS_FUNCTION) {
      if (p5Elem && typeof p5Elem[station] === 'function') return p5Elem[station](structure);
-   } else if (IS_PRIMITIVE) {
+     return this[station] = structure;
+   }
+   if (IS_PRIMITIVE) {
+     if (TAG !== 'meta' && ['content', 'html', 'innerHTML'].includes(station)) return this.innerHTML = structure;
+     if (['text', 'innerText'].includes(station)) return this.innerText = structure;
      if (IS_HEAD) {
        let extension = typeof structure === 'string' ? structure.split('.').slice(-1)[0] : 'none';
        if (station === 'title') return this.innerHTML += `<${station}>${structure}</${station}>`;
@@ -80,38 +93,25 @@
      }
      if (done !== undefined) return;
    }
-   if (station === 'styleSheet') station = 'style';
-   let [tag, ...cls] = station.split('_');
-   let id = cls[0];
-   if (station.includes('.')) {
-     cls = station.split('.');
-     tag = cls.shift();
-   }
-   if (tag.includes('#'))[tag, id] = tag.split('#');
-   tag = structure.tag ? structure.tag : tag;
+   if (['content', 'html', 'innerHTML'].includes(station)) return this.domify(structure, true);
    let elem = (structure.tagName || structure.elt) ? structure : false;
    if (!elem) {
-     if (!tag || !HTML_TAGS.includes(tag.toLowerCase())) {
+     if (!HTML_TAGS.includes(tag)) {
        id = tag;
        tag = 'div';
      }
-     if (IS_ARRAY) elem = structure.map(o => this.domify(o, [tag, ...cls].join('.'), p5Elem));
-     else {
-       elem = p5Elem ? createElement(tag) : document.createElement(tag);
-       if (IS_PRIMITIVE)(p5Elem ? elem.elt : elem).innerHTML = structure;
-       else Object.keys(structure).map(key => elem.domify(structure[key], key, p5Elem));
-     }
+     elem = p5Elem ? createElement(tag) : document.createElement(tag);
+     if (IS_PRIMITIVE)(p5Elem ? elem.elt : elem).innerHTML = structure;
+     else Object.keys(structure).map(key => elem.domify(structure[key], key, p5Elem));
    }
    elt = (p5Elem ? elem.elt : elem);
+   if (cls) cls.forEach(c => c ? elt.classList.add(c) : null);
    if (id = structure.id ? structure.id : id) {
-     if (!IS_ARRAY) elt.setAttribute('id', id);
+     elt.setAttribute('id', id);
      window[id] = elem;
    }
-   if (IS_ARRAY) return;
-   if (cls) cls.forEach(c => c ? elt.classList.add(c) : null);
-   let onready = structure.onready ? structure.onready : structure.onReady;
-   if (onready) onready(elem);
    this[PREPEND ? 'prepend' : 'append'](elt);
+   if (structure.onready) structure.onready(elem);
    return elem;
  };
  
@@ -172,12 +172,19 @@
  // used to bind element properties, attributes, styles or content
  
  const dombind = (name, onvalue, value) => {
+   let bind = window[name] ? window[name] : window[name] = new Bind();
    const IS_FUNC = typeof onvalue === 'function'
    return {
-     bind: name,
+     bind: bind,
      onvalue: IS_FUNC ? onvalue : value,
      value: IS_FUNC ? value : onvalue
    }
+ }
+ 
+ const domload = (url, onload, value) => {
+   let obj = dombind(url, onload, value);
+   domloadRequest(url, data => !data ? null : obj.bind.value = data);
+   return obj;
  }
  
  class Bind {
@@ -194,6 +201,7 @@
      elem.domify(onvalue(this._value), property);
    }
    set value(val) {
+     if ([null, undefined].includes(val)) return;
      this._value = val;
      this._elems.forEach(e => e.elem.domify(e.onvalue(val), e.property));
    }
@@ -201,9 +209,9 @@
      return this._value;
    }
  }
-
+ 
  // XMLHttpRequest JSON
- const domload = (url, data, onsuccess = _ => null, onerror = _ => null) => {
+ const domloadRequest = (url, data, onsuccess = _ => null, onerror = _ => null) => {
    const GET = data === false;
    if (typeof data === 'function') {
      onerror = onsuccess;
@@ -225,7 +233,7 @@
  };
  
  // initializes the dom and head automatically if there's an ini.json and/or a main.js
- domload('ini.json', data => dominify(data, true), error => error === 404 ? dominify(false, true) : null);
+ domloadRequest('ini.json', data => dominify(data, true), error => error === 404 ? dominify(false, true) : null);
  
  let dominify = (INI, autoCall = false) => {
    const ENTRY_POINT = 'main.js';
@@ -283,7 +291,7 @@
      }, true);
    }
    // sets the entry point Should only be done once
-   if (autoCall) domload(INI ? ini.entryPoint : ENTRY_POINT, data => {
+   if (autoCall) domloadRequest(INI ? ini.entryPoint : ENTRY_POINT, data => {
      domify({
        script: [{
          type: ini.module ? 'module' : null,
