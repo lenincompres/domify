@@ -143,9 +143,9 @@ const domifyCSS = (sel, obj) => {
   }
   let extra = [],
     id, cls;
-  [sel, id, ...cls] = sel.split('_');
+  [sel, ...cls] = sel.split('_');
   if (sel.toLowerCase() === 'fontface') sel = '@font-face';
-  if (id) sel += '#' + id;
+  //if (id) sel += '#' + id;
   if (cls.length) sel += '.' + cls.join('.');
   if (isPrimitive(obj)) return `${sel.camelCase('-')}: ${obj};`;
   if (Array.isArray(obj)) obj = assignAll(obj);
