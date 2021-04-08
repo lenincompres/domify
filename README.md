@@ -74,7 +74,7 @@ myInput.style.border = 'none';
 goBtn.click();
 ```
 
-You may assign id's in the property name by separating it from the tag with an underscore (_). Example: div_mainField:, this will create a div element with an id of mainField. Also, if a name is not identified as a tag, attribute or style, domify interprets it as an id and assumes a div tag. Any id or tag property will replace those interpreted from the name.
+You may assign id's in the property name by separating it from the tag with an underscore (_). Example: div_mainField:, this will create a div element with an id of mainField. Any id or tag property will replace those interpreted from the name.
 
 ```javascript
 domify({
@@ -99,7 +99,7 @@ Domify also adds a class to the element for every word in its name after an unde
 
 Use arrays to create multiple alements of the same tag. Giving the array an id (using the underscore method) creates a global array that holds these elements.
 
-```javasript
+```javascript
 domify({
   ul: {
     li_listedThings: [
@@ -195,7 +195,7 @@ document.head.domify({
 };
 ```
 
-Domify recognizes pseudo-elements and pseudo-classes. And selectors written with underscores (_) are interpreted as such: tag_idName_className_extraClass. In this sense _myImput will be an id (#myInput), and __warning a class (.warning). Something like menu_topMenu_cloud_intense becomes menu#topMenu.cloud.intense.
+Domify recognizes pseudo-elements and pseudo-classes when converting CSS. And selectors written with underscores (_) are interpreted as such: tag_idName_className_extraClass. In this sense _myImput will be an id (#myInput), and __warning a class (.warning). Something like menu_topMenu_cloud_intense becomes menu#topMenu.cloud.intense.
 
 ## Initializing
 
