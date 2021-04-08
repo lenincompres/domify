@@ -167,7 +167,7 @@ document.body.domify({
 });
 ```
 
-It is recommended to only do this in the head element. You may also take advantage of domify interpreting JS structural objects into CSS—nesting and all.
+It is recommended to only do this only once in the code. You may also take advantage of domify interpreting JS structural objects into CSS—nesting and all.
 
 ```javascript
 document.head.domify({
