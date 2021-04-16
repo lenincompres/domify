@@ -181,6 +181,7 @@ const dombind = (name, onvalue, value) => {
 }
 
 const domloadRequest = (url, data, onsuccess = _ => null, onerror = _ => null) => {
+  if(!url) return;
   const GET = data === false;
   if (typeof data === 'function') {
     onerror = onsuccess;
@@ -201,7 +202,6 @@ const domload = (url, onload, value) => {
 
 // initializes the dom and head automatically if there's an ini.json and/or a main.js
 let dominify = (INI) => {
-  const ENTRY_POINT = 'main.js';
   const makeArray = a => Array.isArray(a) ? a : [a];
   let ini = Object.assign({
     title: 'A Domified Site',
@@ -215,7 +215,7 @@ let dominify = (INI) => {
     link: [],
     library: [],
     script: [],
-    entryPoint: ENTRY_POINT,
+    entryPoint: false,
     module: true,
     postscript: []
   }, ['boolean', 'number', 'string'].includes(typeof INI) ? {} : INI);
@@ -285,4 +285,4 @@ let dominify = (INI) => {
     });
   });
 };
-domloadRequest('ini.json', data => dominify(JSON.parse(data)), error => error === 404 ? dominify() : null);
+domloadRequest('ini.json', data => dominify(JSON.parse(data)));
