@@ -42,7 +42,7 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
   if (IS_ARRAY) {
     if (station === 'class') return structure.forEach(c => c ? this.classList.add(c) : null);
     if (station === 'addEventListener') return this.addEventListener(...structure);
-    let map = structure.map(s => this.domify(s, tag + (cls ? '.' + cls.join('.'): '')));
+    let map = structure.map(s => this.domify(s, tag + (cls ? '.' + cls.join('.') : '')));
     if (id) window[id] = map;
     return;
   }
@@ -131,13 +131,11 @@ const domifyCSS = (sel, obj) => {
   sel = cls.shift();
   if (sel.toLowerCase() === 'fontface') sel = '@font-face';
   if (cls.length) sel += '.' + cls.join('.');
-  if (['boolean', 'number', 'string'].includes(typeof obj))
-    return `${unCamel(sel)}: ${obj};`;
+  if (['boolean', 'number', 'string'].includes(typeof obj)) return `${unCamel(sel)}: ${obj};\n`;
   if (Array.isArray(obj)) obj = assignAll(obj);
   let css = Object.keys(obj).map(key => {
     let style = obj[key];
-    if (['boolean', 'number', 'string'].includes(typeof style))
-      return domifyCSS(key, style);
+    if (['boolean', 'number', 'string'].includes(typeof style)) return domifyCSS(key, style);
     let sub = unCamel(key.split('(')[0]);
     let xSel = `${sel} ${key}`;
     if (['active', 'checked', 'disabled', 'empty', 'enabled', 'first-child', 'first-of-type', 'focus', 'hover', 'in-range', 'invalid', 'last-of-type', 'link', 'only-of-type', 'only-child', 'optional', 'out-of-range', 'read-only', 'read-write', 'required', 'root', 'target', 'valid', 'visited', 'lang', 'not', 'nth-child', 'nth-last-child', 'nth-last-of-type', 'nth-of-type'].includes(sub)) xSel = `${sel}:${key}`;
@@ -146,7 +144,7 @@ const domifyCSS = (sel, obj) => {
     else if (style.immediate) xSel = `${sel}>${key}`;
     extra.push(domifyCSS(xSel, style));
   }).join(' ');
-  return (css ? `\n${sel} {${css}} ` : '') + extra.join(' ');
+  return (css ? `\n${sel} {\n ${css}}` : '') + extra.join(' ');
 }
 
 class Bind {
@@ -203,16 +201,16 @@ const domload = (url, onload, value) => {
 
 // initializes the dom and head automatically if there's an ini.jsonINI
 const dominify = (ini) => {
-  if(typeof ini === 'string') ini = JSON.parse(ini);
+  if (typeof ini === 'string') ini = JSON.parse(ini);
   ini = Object.assign({
     title: 'A Domified Site',
-    viewport: 'width=device-width, minimum-scale=1.0, maximum-scale=1.0',
     charset: 'UTF-8',
-    icon: 'assets/icon.ico',
+    viewport: 'width=device-width, minimum-scale=1.0, maximum-scale=1.0',
+    icon: false,
     meta: [],
     reset: true,
     style: [],
-    font: 'Arial, Helvetica, sans-serif',
+    font: 'Arial, sans-serif',
     link: [],
     script: [],
     entryPoint: 'main.js',
@@ -224,7 +222,7 @@ const dominify = (ini) => {
       boxSizing: 'content-box',
       font: 'inherit',
       verticalAlign: 'baseline',
-      lineHeight: 'inherit',
+      lineHeight: '1.25em',
       margin: 0,
       padding: 0,
       border: 0,
@@ -237,9 +235,6 @@ const dominify = (ini) => {
     },
     body: {
       fontSize: '100%',
-      fontStyle: 'none',
-      lineHeight: '1em',
-      verticalAlign: 'baseline',
       fontFamily: ini.font,
     },
     'b, strong': {
@@ -252,16 +247,9 @@ const dominify = (ini) => {
       cursor: 'pointer',
     }
   };
-  const N = 6,
-    EM_MAX = 2;
-  let hn = {};
-  (new Array(N)).fill('h').forEach((h, i) => {
-    hn[h + (i + 1)] = {
-      fontSize: (EM_MAX - i / N) + 'em',
-      lineHeight: '1em',
-    }
-  });
-  Object.assign(reset, hn);
+  (new Array(6)).fill().forEach((_, i, a) => reset[`h${i + 1}`] = new Object({
+    fontSize: `${Math.round(100 * (2 - i / a.length)) / 100}em`
+  }));
   const asArray = a => Array.isArray(a) ? a : [a];
   document.head.domify({
     title: ini.title,
@@ -271,16 +259,16 @@ const dominify = (ini) => {
       name: 'viewport',
       content: ini.viewport
     }, ...asArray(ini.meta)],
-    link: [{
+    link: [ini.icon? {
       rel: 'icon',
       href: ini.icon
-    }, ...asArray(ini.link)],
+    } : undefined, ...asArray(ini.link)],
     script: asArray(ini.script),
-    style: [ini.reset ? reset : null, ...asArray(ini.style)]
+    style: [ini.reset ? reset : undefined, ...asArray(ini.style)]
   }, true);
   domify({
     script: [{
-      type: ini.module ? 'module' : null,
+      type: ini.module ? 'module' : undefined,
       src: ini.entryPoint
     }, ...asArray(ini.postscript)]
   });
