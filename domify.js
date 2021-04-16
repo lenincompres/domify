@@ -21,7 +21,7 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
   if (elt) return elt.domify(structure, station, CLEAR, p5Elem);
   let p5Elem = args.filter(a => a && a.elt)[0];
   const PREPEND = CLEAR === false;
-  if (!structure.bind && (station === 'content' &&  TAG !== 'meta') || station === 'innerHTML') station = 'html';
+  if (!structure.bind && (station === 'content' && TAG !== 'meta') || station === 'innerHTML') station = 'html';
   if (!station || station === 'html') {
     if (IS_PRIMITIVE) return this.innerHTML = structure;
     if (CLEAR || station === 'html') this.innerHTML = '';
@@ -37,12 +37,12 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
   }
   if (tag.includes('#'))[tag, id] = tag.split('#');
   tag = (structure.tag ? structure.tag : tag).toLowerCase();
-  const IS_TAG = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'main', 'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'frame', 'frameset', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map', 'mark', 'meta', 'meter', 'menu', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'progress', 'q', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'u', 'ul', 'var', 'video', 'wbr'].includes(tag);
+  // const IS_TAG = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'main', 'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'datalist', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'frame', 'frameset', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map', 'mark', 'meta', 'meter', 'menu', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'progress', 'q', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'u', 'ul', 'var', 'video', 'wbr'].includes(tag);
   const IS_ATTRIBUTE = ['accept', 'accept-charset', 'accesskey', 'action', 'align', 'alt', 'async', 'autocomplete', 'autofocus', 'autoplay', 'bgcolor', 'border', 'charset', 'checked', 'cite', 'class', 'color', 'cols', 'colspan', 'content', 'contenteditable', 'controls', 'coords', 'data', 'datetime', 'default', 'defer', 'dir', 'dirname', 'disabled', 'download', 'draggable', 'enctype', 'for', 'form', 'formaction', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'http-equiv', 'id', 'ismap', 'kind', 'lang', 'list', 'loop', 'low', 'max', 'maxlength', 'media', 'method', 'min', 'multiple', 'muted', 'name', 'novalidate', 'open', 'optimum', 'pattern', 'placeholder', 'poster', 'preload', 'readonly', 'rel', 'required', 'reversed', 'rows', 'rowspan', 'sandbox', 'scope', 'selected', 'shape', 'size', 'sizes', 'spellcheck', 'src', 'srcdoc', 'srclang', 'srcset', 'start', 'step', 'style', 'tabindex', 'target', 'title', 'translate', 'type', 'usemap', 'value', 'wrap', 'width'].includes(station);
   if (IS_ARRAY) {
     if (station === 'class') return structure.forEach(c => c ? this.classList.add(c) : null);
     if (station === 'addEventListener') return this.addEventListener(...structure);
-    let map = structure.map(s => this.domify(s, tag + '.' + cls.join('.')));
+    let map = structure.map(s => this.domify(s, tag + (cls ? '.' + cls.join('.'): '')));
     if (id) window[id] = map;
     return;
   }
@@ -73,20 +73,21 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
   if (IS_PRIMITIVE) {
     if (IS_HEAD) {
       let extension = typeof structure === 'string' ? structure.split('.').slice(-1)[0] : 'none';
-      if (station === 'title') return this.innerHTML += `<${station}>${structure}</${station}>`;
-      if (station === 'link') {
+      if (tag === 'title') return this.innerHTML += `<title>${structure}</title>`;
+      if (tag === 'link') {
         let rel = {
           none: '',
-          css: 'css',
-          sass: 'sass',
-          scss: 'scss',
+          css: 'stylesheet',
+          sass: 'stylesheet/sass',
+          scss: 'stylesheet/scss',
+          less: 'stylesheet/less',
           ico: 'icon'
         };
-        return this.innerHTML += `<link href="${structure}" rel="${rel[extension]}">`;
+        return this.innerHTML += `<link rel="${rel[extension]}" href="${structure}">`;
       }
-      if (station === 'script' && extension === 'js') return this.innerHTML += `<script src="${structure}"</script>`;
+      if (tag === 'script' && extension === 'js') return this.innerHTML += `<script src="${structure}"</script>`;
     }
-    let done = this.style[station] !== undefined ? this.style[station] = structure : undefined;
+    let done = (this.style[station] !== undefined) ? (this.style[station] = structure) : undefined;
     done = IS_ATTRIBUTE ? !this.setAttribute(station, structure) : done;
     if (station === 'id') window[station] = this;
     if (done !== undefined) return;
@@ -115,7 +116,6 @@ if (typeof p5 !== 'undefined') {
 }
 
 const domifyCSS = (sel, obj) => {
-  // consolidates structurals objects in an array into one object with all properties
   const assignAll = (arr = [], dest = {}) => {
     arr.forEach(prop => Object.assign(dest, prop));
     return dest;
@@ -142,6 +142,7 @@ const domifyCSS = (sel, obj) => {
     let xSel = `${sel} ${key}`;
     if (['active', 'checked', 'disabled', 'empty', 'enabled', 'first-child', 'first-of-type', 'focus', 'hover', 'in-range', 'invalid', 'last-of-type', 'link', 'only-of-type', 'only-child', 'optional', 'out-of-range', 'read-only', 'read-write', 'required', 'root', 'target', 'valid', 'visited', 'lang', 'not', 'nth-child', 'nth-last-child', 'nth-last-of-type', 'nth-of-type'].includes(sub)) xSel = `${sel}:${key}`;
     else if (['after', 'before', 'first-letter', 'first-line', 'selection'].includes(sub)) xSel = `${sel}::${key}`;
+    else if (key.startsWith('_')) xSel = `${sel}${key}`;
     else if (style.immediate) xSel = `${sel}>${key}`;
     extra.push(domifyCSS(xSel, style));
   }).join(' ');
@@ -181,7 +182,7 @@ const dombind = (name, onvalue, value) => {
 }
 
 const domloadRequest = (url, data, onsuccess = _ => null, onerror = _ => null) => {
-  if(!url) return;
+  if (!url) return;
   const GET = data === false;
   if (typeof data === 'function') {
     onerror = onsuccess;
@@ -200,89 +201,88 @@ const domload = (url, onload, value) => {
   return obj;
 }
 
-// initializes the dom and head automatically if there's an ini.json and/or a main.js
-let dominify = (INI) => {
-  const makeArray = a => Array.isArray(a) ? a : [a];
-  let ini = Object.assign({
+// initializes the dom and head automatically if there's an ini.jsonINI
+const dominify = (ini) => {
+  if(typeof ini === 'string') ini = JSON.parse(ini);
+  ini = Object.assign({
     title: 'A Domified Site',
-    viewport: 'width=device-width, initial-scale=1.0',
+    viewport: 'width=device-width, minimum-scale=1.0, maximum-scale=1.0',
     charset: 'UTF-8',
     icon: 'assets/icon.ico',
     meta: [],
-    resetCSS: true,
+    reset: true,
     style: [],
     font: 'Arial, Helvetica, sans-serif',
     link: [],
-    library: [],
     script: [],
-    entryPoint: false,
+    entryPoint: 'main.js',
     module: true,
     postscript: []
-  }, ['boolean', 'number', 'string'].includes(typeof INI) ? {} : INI);
-  if (INI) {
-    let reset = {
-      '*': {
-        boxSizing: 'border',
-        font: 'inherit',
-        verticalAlign: 'baseline',
-        lineHeight: 'inherit',
-        margin: 0,
-        padding: 0,
-        border: 0,
-        borderSpacing: 0,
-        borderCollapse: 'collapse',
-        listStyle: 'none',
-        quotes: 'none',
-        content: '',
-        content: 'none',
-      },
-      body: {
-        fontSize: '100%',
-        fontStyle: 'none',
-        lineHeight: '1em',
-        verticalAlign: 'baseline',
-        fontFamily: ini.font,
-      },
-      'b, strong': {
-        fontWeight: 'bold',
-      },
-      'i, em': {
-        fontStyle: 'itallic',
-      }
-    };
-    const N = 6,
-      EM_MAX = 2;
-    let hn = {};
-    (new Array(N)).fill('h').forEach((h, i) => {
-      hn[h + (i + 1)] = {
-        fontSize: (EM_MAX - i / N) + 'em',
-        lineHeight: '1em',
-      }
-    });
-    Object.assign(reset, hn);
-    document.head.domify({
-      title: ini.title,
-      meta: [{
-        charset: ini.charset
-      }, {
-        name: 'viewport',
-        content: ini.viewport
-      }, ...makeArray(ini.meta)],
-      link: [{
-        rel: 'icon',
-        href: ini.icon
-      }, ...makeArray(ini.link)],
-      script: makeArray(ini.script),
-      style: [ini.resetCSS ? reset : null, ...makeArray(ini.style)]
-    }, true);
-  }
-  domloadRequest(ini.entryPoint, _ => {
-    domify({
-      script: [{
-        type: ini.module ? 'module' : null,
-        src: ini.entryPoint
-      }, ...makeArray(ini.postscript)]
-    });
+  }, ini);
+  let reset = {
+    '*': {
+      boxSizing: 'content-box',
+      font: 'inherit',
+      verticalAlign: 'baseline',
+      lineHeight: 'inherit',
+      margin: 0,
+      padding: 0,
+      border: 0,
+      borderSpacing: 0,
+      borderCollapse: 'collapse',
+      listStyle: 'none',
+      quotes: 'none',
+      content: '',
+      content: 'none',
+    },
+    body: {
+      fontSize: '100%',
+      fontStyle: 'none',
+      lineHeight: '1em',
+      verticalAlign: 'baseline',
+      fontFamily: ini.font,
+    },
+    'b, strong': {
+      fontWeight: 'bold',
+    },
+    'i, em': {
+      fontStyle: 'itallic',
+    },
+    'a, button': {
+      cursor: 'pointer',
+    }
+  };
+  const N = 6,
+    EM_MAX = 2;
+  let hn = {};
+  (new Array(N)).fill('h').forEach((h, i) => {
+    hn[h + (i + 1)] = {
+      fontSize: (EM_MAX - i / N) + 'em',
+      lineHeight: '1em',
+    }
+  });
+  Object.assign(reset, hn);
+  const asArray = a => Array.isArray(a) ? a : [a];
+  document.head.domify({
+    title: ini.title,
+    meta: [{
+      charset: ini.charset
+    }, {
+      name: 'viewport',
+      content: ini.viewport
+    }, ...asArray(ini.meta)],
+    link: [{
+      rel: 'icon',
+      href: ini.icon
+    }, ...asArray(ini.link)],
+    script: asArray(ini.script),
+    style: [ini.reset ? reset : null, ...asArray(ini.style)]
+  }, true);
+  domify({
+    script: [{
+      type: ini.module ? 'module' : null,
+      src: ini.entryPoint
+    }, ...asArray(ini.postscript)]
   });
 };
-domloadRequest('ini.json', data => dominify(JSON.parse(data)));
+domloadRequest('ini.json', data => dominify(data));
