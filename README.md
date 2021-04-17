@@ -293,7 +293,7 @@ domify({
 You may provide dombind a default value for the bind as a third argument. In this case that value was true. Domify is agnostic about the order of the onvalue function and the default value passed after the name of the bind. To bind a property to several values, use an array.
 
 ```javascript
-value: dombind(['enabledField', 'timeOfDay'], (enabled, time) => (value && time < 12) ? 'Enabled' : 'Disabled')
+value: dombind(['enabledField', 'timeOfDay'], (enabled, time) => (enabled && time < 12) ? 'Enabled' : 'Disabled')
 ```
 
 ## Other Uses
