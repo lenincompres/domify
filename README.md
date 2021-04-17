@@ -234,7 +234,10 @@ The domify library will initialize the head if it finds an ini.json file in the 
   "charset": "UTF-8",
   "icon": "assets/icon.ico",
   "meta": [],
-  "resetCSS": true,
+  "reset": true,
+  "fontFamily": "Arial, sans-serif",
+  "fontSize": "14px",
+  "fontFace": [],
   "style": [],
   "link": [],
   "script": [],
@@ -244,7 +247,11 @@ The domify library will initialize the head if it finds an ini.json file in the 
 }
 ```
 
-The meta, link, script, postscript and style may be a single object or an array of these elements. The script gets added to the head—before the entry point—, while postscript get added in the body after the entry point.
+The meta, fontFace, link, script, postscript and style may be a single object or an array of these elements. 
+* The *script* gets added to the head—before the entry point—, while *postscript* get added in the body after the entry point. 
+* Just like fontFace amd fontSize, any other styling in the ini.json is added to the body element; you main indicate the background color or fontWeight, for instance. 
+* With *fontFace*, you may add fonts with the *fontFamily* and *src* properties; if you just indicate a filename string, domify will add the filename as the font family name.
+* *link* also interprets url strings or the object and properties of the linked resources.
 
 ## Binding
 
@@ -283,7 +290,11 @@ domify({
 });
 ```
 
-You may also give dombind a default value for the bind. In this case that value was true. Domify is agnostic about the order of the onvalue function and the default value passed after the name of the bind.
+You may provide dombind a default value for the bind as a third argument. In this case that value was true. Domify is agnostic about the order of the onvalue function and the default value passed after the name of the bind. To bind a property to several values, use an array.
+
+```javascript
+value: dombind(['enabledField', 'timeOfDay'], (enabled, time) => (value && time < 12) ? 'Enabled' : 'Disabled')
+```
 
 ## Other Uses
 
