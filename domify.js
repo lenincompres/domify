@@ -21,7 +21,7 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
   if (elt) return elt.domify(structure, station, CLEAR, p5Elem);
   let p5Elem = args.filter(a => a && a.elt)[0];
   const PREPEND = CLEAR === false;
-  if (!structure.bind && (station === 'content' && TAG !== 'meta') || station === 'innerHTML') station = 'html';
+  if (!structure.bonds && (station === 'content' && TAG !== 'meta') || station === 'innerHTML') station = 'html';
   if (!station || station === 'html') {
     if (IS_PRIMITIVE) return this.innerHTML = structure;
     if (CLEAR || station === 'html') this.innerHTML = '';
@@ -47,11 +47,9 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
     return;
   }
   if (station === 'addEventListener') return structure.options ? this.addEventListener(structure.type, structure.listener, structure.options) : this.addEventListener(structure.type, structure.listener, structure.useCapture, structure.wantsUntrusted);
-  if (structure.bind && !IS_FUNCTION) {
+  if (structure.bonds) {
     if (!IS_ATTRIBUTE && this.style[station] === undefined) return this.domify(structure, 'content');
-    structure.bind.bind(this, station, structure.onvalue);
-    if (structure.value !== undefined) structure.bind.value = structure.value;
-    return;
+    return structure.bonds.forEach(bond => bond.bind(this, station, structure.onvalue));
   }
   if (tag === 'style') {
     if (IS_PRIMITIVE && !IS_HEAD) return this.setAttribute(tag, structure);
@@ -140,7 +138,7 @@ const domifyCSS = (sel, obj) => {
     let xSel = `${sel} ${key}`;
     if (['active', 'checked', 'disabled', 'empty', 'enabled', 'first-child', 'first-of-type', 'focus', 'hover', 'in-range', 'invalid', 'last-of-type', 'link', 'only-of-type', 'only-child', 'optional', 'out-of-range', 'read-only', 'read-write', 'required', 'root', 'target', 'valid', 'visited', 'lang', 'not', 'nth-child', 'nth-last-child', 'nth-last-of-type', 'nth-of-type'].includes(sub)) xSel = `${sel}:${key}`;
     else if (['after', 'before', 'first-letter', 'first-line', 'selection'].includes(sub)) xSel = `${sel}::${key}`;
-    else if (key.startsWith('_')) xSel = `${sel}${key}`;
+    else if (['_', '.'].some(s => key.startsWith(s))) xSel = `${sel}${key}`;
     else if (style.immediate) xSel = `${sel}>${key}`;
     extra.push(domifyCSS(xSel, style));
   }).join(' ');
@@ -169,13 +167,15 @@ class Bind {
     return this._value;
   }
 }
-const dombind = (name, onvalue, value) => {
-  let bind = window[name] !== undefined ? window[name] : window[name] = new Bind();
-  const IS_FUNC = typeof onvalue === 'function'
+const dombind = (names, onvalue, values) => {
+  if (!Array.isArray(names)) names = [names];
+  if (!Array.isArray(values)) values = [values];
+  let bonds = names.map(name => window[name] !== undefined ? window[name] : window[name] = new Bind());
+  const IS_FUNC = typeof onvalue === 'function';
+  if (values !== undefined) bonds.forEach((bond, i) => bond.value = values[i]);
   return {
-    bind: bind,
-    onvalue: IS_FUNC ? onvalue : value,
-    value: IS_FUNC ? value : onvalue
+    bonds: bonds,
+    onvalue: _ => onvalue(...bonds.map(bond => bond.value))
   }
 }
 
@@ -209,20 +209,28 @@ const dominify = (ini) => {
     icon: false,
     meta: [],
     reset: true,
-    style: [],
-    font: 'Arial, sans-serif',
+    fontFace: [],
     link: [],
+    style: [],
+    fontFamily: 'Arial, sans-serif',
+    fontSize: '14px',
     script: [],
     entryPoint: 'main.js',
     module: true,
     postscript: []
   }, ini);
   let reset = {
+    fontFace: (Array.isArray(ini.fontFace) ? ini.fontFace : [ini.fontFace]).map(ff => typeof ff === 'string' ? new Object({
+      fontFamily: ff.split(/[\/,.]+/).slice(-2)[0],
+      src: `url(${ff})`
+    }) : ff),
     '*': {
-      boxSizing: 'content-box',
-      font: 'inherit',
+      boxSizing: 'border-box',
+      fontFamily: 'inherit',
+      fontSize: 'inherit',
       verticalAlign: 'baseline',
       lineHeight: '1.25em',
+      fontSize: 'inherit',
       margin: 0,
       padding: 0,
       border: 0,
@@ -233,10 +241,6 @@ const dominify = (ini) => {
       content: '',
       content: 'none',
     },
-    body: {
-      fontSize: '100%',
-      fontFamily: ini.font,
-    },
     'b, strong': {
       fontWeight: 'bold',
     },
@@ -244,6 +248,7 @@ const dominify = (ini) => {
       fontStyle: 'itallic',
     },
     'a, button': {
+      textDecoration: 'none',
       cursor: 'pointer',
     }
   };
@@ -259,14 +264,17 @@ const dominify = (ini) => {
       name: 'viewport',
       content: ini.viewport
     }, ...asArray(ini.meta)],
-    link: [ini.icon? {
+    link: [ini.icon ? {
       rel: 'icon',
       href: ini.icon
     } : undefined, ...asArray(ini.link)],
     script: asArray(ini.script),
     style: [ini.reset ? reset : undefined, ...asArray(ini.style)]
   }, true);
+  let bodyStyle = {};
+  Object.keys(ini).filter(key => document.body.style[key] !== undefined).forEach(key => bodyStyle[key] = ini[key]);
   domify({
+    style: bodyStyle,
     script: [{
       type: ini.module ? 'module' : undefined,
       src: ini.entryPoint
