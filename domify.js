@@ -21,6 +21,17 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
   if (elt) return elt.domify(structure, station, CLEAR, p5Elem);
   let p5Elem = args.filter(a => a && a.elt)[0];
   const PREPEND = CLEAR === false;
+  if (structure.content && Array.isArray(structure.content)) {
+    if (structure.id) {
+      station += '_' + id;
+      delete structure.id;
+    }
+    return structure.content.forEach(item => {
+      let individual = Object.assign({}, structure);
+      individual.content = item;
+      this.domify(individual, ...args);
+    })
+  }
   if (!structure.bonds && (station === 'content' && TAG !== 'meta') || station === 'innerHTML') station = 'html';
   if (!station || station === 'html') {
     if (IS_PRIMITIVE) return this.innerHTML = structure;
@@ -199,10 +210,14 @@ const domload = (url, onload, value) => {
   return obj;
 }
 
-// initializes the dom and head automatically if there's an ini.jsonINI
-const dominify = (ini) => {
-  if (typeof ini === 'string') ini = JSON.parse(ini);
-  ini = Object.assign({
+const dominify = (ini) => { // initializes the dom and head
+  if (ini === undefined) return;
+  if (typeof ini === 'boolean' || !ini.length) ini = {};
+  if (typeof ini === 'string') {
+    if (ini.endsWith('.json')) return domloadRequest(ini, data => dominify(data));
+    ini = JSON.parse(ini);
+  }
+  const INI = {
     title: 'A Domified Site',
     charset: 'UTF-8',
     viewport: 'width=device-width, minimum-scale=1.0, maximum-scale=1.0',
@@ -212,18 +227,18 @@ const dominify = (ini) => {
     fontFace: [],
     link: [],
     style: [],
-    fontFamily: 'Arial, sans-serif',
-    fontSize: '14px',
     script: [],
     entryPoint: 'main.js',
     module: true,
     postscript: []
-  }, ini);
+  };
+  let settings = Object.assign({}, INI);
+  Object.assign(settings, ini);
   let reset = {
-    fontFace: (Array.isArray(ini.fontFace) ? ini.fontFace : [ini.fontFace]).map(ff => typeof ff === 'string' ? new Object({
-      fontFamily: ff.split(/[\/,.]+/).slice(-2)[0],
-      src: `url(${ff})`
-    }) : ff),
+    fontFace: (Array.isArray(settings.fontFace) ? settings.fontFace : [settings.fontFace]).map(fontFace => typeof fontFace === 'string' ? new Object({
+      fontFamily: fontFace.split(/[\/,.]+/).slice(-2)[0],
+      src: `url(${fontFace})`
+    }) : fontFace),
     '*': {
       boxSizing: 'border-box',
       fontFamily: 'inherit',
@@ -241,6 +256,10 @@ const dominify = (ini) => {
       content: '',
       content: 'none',
     },
+    body:{
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '14px',
+    },
     'b, strong': {
       fontWeight: 'bold',
     },
@@ -257,28 +276,27 @@ const dominify = (ini) => {
   }));
   const asArray = a => Array.isArray(a) ? a : [a];
   document.head.domify({
-    title: ini.title,
+    title: settings.title,
     meta: [{
-      charset: ini.charset
+      charset: settings.charset
     }, {
       name: 'viewport',
-      content: ini.viewport
-    }, ...asArray(ini.meta)],
-    link: [ini.icon ? {
+      content: settings.viewport
+    }, ...asArray(settings.meta)],
+    link: [settings.icon ? {
       rel: 'icon',
-      href: ini.icon
-    } : undefined, ...asArray(ini.link)],
-    script: asArray(ini.script),
-    style: [ini.reset ? reset : undefined, ...asArray(ini.style)]
+      href: settings.icon
+    } : undefined, ...asArray(settings.link)],
+    script: asArray(settings.script),
+    style: [settings.reset ? reset : undefined, ...asArray(settings.style)]
   }, true);
-  let bodyStyle = {};
-  Object.keys(ini).filter(key => document.body.style[key] !== undefined).forEach(key => bodyStyle[key] = ini[key]);
+  Object.keys(ini).filter(key => INI[key] !== undefined).forEach(key => delete ini[key]);
   domify({
-    style: bodyStyle,
+    style: ini,
     script: [{
-      type: ini.module ? 'module' : undefined,
-      src: ini.entryPoint
-    }, ...asArray(ini.postscript)]
+      type: settings.module ? 'module' : undefined,
+      src: settings.entryPoint
+    }, ...asArray(settings.postscript)]
   });
 };
-domloadRequest('ini.json', data => dominify(data));
+if (SET = document.head.querySelector('[initialize]')) dominify(SET.getAttribute('initialize'));
