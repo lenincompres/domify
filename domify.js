@@ -10,7 +10,7 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
   let station = args.filter(a => typeof a === 'string')[0]; // style|attr|tag|inner…|onEvent|name
   if (['tag', 'onready'].includes(station)) return;
   if (['text', 'innerText'].includes(station)) return this.innerText = structure;
-  if (typeof structure == 'string' && structure.endsWith('.json')) return domloadRequest(structure, data => this.domify(data, ...args), error => console.log(structure, 'Could not load JSON file.'));
+  if (typeof structure == 'string' && structure.endsWith('.json')) return domquest(structure, data => this.domify(data, ...args), error => console.log(structure, 'Could not load JSON file.'));
   const IS_PRIMITIVE = ['boolean', 'number', 'string'].includes(typeof structure);
   const IS_FUNCTION = typeof structure === 'function';
   const IS_ARRAY = Array.isArray(structure);
@@ -33,7 +33,7 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
     })
   }
   if (TAG === 'style' && !structure.content && !IS_PRIMITIVE) {
-    structure = domifyCSS(structure);
+    structure = domcss(structure);
   }
   if (!structure.bonds && (station === 'content' && TAG !== 'meta') || station === 'innerHTML') station = 'html';
   if (!station || station === 'html') {
@@ -76,7 +76,7 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
       if (CLEAR) this.style = '';
       return Object.keys(structure).forEach(k => this.style[k] = structure[k]);
     }
-    if (!['boolean', 'number', 'string'].includes(typeof structure.content)) structure.content = domifyCSS(structure.content);
+    if (!['boolean', 'number', 'string'].includes(typeof structure.content)) structure.content = domcss(structure.content);
   }
   if (IS_FUNCTION) {
     if (p5Elem && typeof p5Elem[station] === 'function') return p5Elem[station](structure);
@@ -127,7 +127,7 @@ if (typeof p5 !== 'undefined') {
   }
 }
 
-const domifyCSS = (sel, obj) => {
+const domcss = (sel, obj) => {
   const assignAll = (arr = [], dest = {}) => {
     arr.forEach(prop => Object.assign(dest, prop));
     return dest;
@@ -135,7 +135,7 @@ const domifyCSS = (sel, obj) => {
   if (typeof sel !== 'string') {
     if (!sel) return;
     if (Array.isArray(sel)) sel = assignAll(sel);
-    return Object.keys(sel).map(key => domifyCSS(key, sel[key])).join(' ');
+    return Object.keys(sel).map(key => domcss(key, sel[key])).join(' ');
   }
   const unCamel = (str) => str.replace(/([A-Z])/g, '-' + '$1').toLowerCase();
   let extra = [];
@@ -147,25 +147,66 @@ const domifyCSS = (sel, obj) => {
   if (Array.isArray(obj)) obj = assignAll(obj);
   let css = Object.keys(obj).map(key => {
     let style = obj[key];
-    if (['boolean', 'number', 'string'].includes(typeof style)) return domifyCSS(key, style);
+    if (['boolean', 'number', 'string'].includes(typeof style)) return domcss(key, style);
     let sub = unCamel(key.split('(')[0]);
     let xSel = `${sel} ${key}`;
     if (['active', 'checked', 'disabled', 'empty', 'enabled', 'first-child', 'first-of-type', 'focus', 'hover', 'in-range', 'invalid', 'last-of-type', 'link', 'only-of-type', 'only-child', 'optional', 'out-of-range', 'read-only', 'read-write', 'required', 'root', 'target', 'valid', 'visited', 'lang', 'not', 'nth-child', 'nth-last-child', 'nth-last-of-type', 'nth-of-type'].includes(sub)) xSel = `${sel}:${key}`;
     else if (['after', 'before', 'first-letter', 'first-line', 'selection'].includes(sub)) xSel = `${sel}::${key}`;
     else if (['_', '.'].some(s => key.startsWith(s))) xSel = `${sel}${key}`;
     else if (style.immediate) xSel = `${sel}>${key}`;
-    extra.push(domifyCSS(xSel, style));
+    extra.push(domcss(xSel, style));
   }).join(' ');
   return (css ? `\n${sel} {\n ${css}}` : '') + extra.join(' ');
 }
 
-const domstyle = style => {
+const domstyle = (style, reset = true) => {
+  if (window.domstyle === undefined) {
+    window.domstyle = document.head.domify({
+      content: '/* Created with domstyle */'
+    }, 'style');
+    if (reset) {
+      reset = {
+        '*': {
+          boxSizing: 'border-box',
+          fontFamily: 'inherit',
+          fontSize: 'inherit',
+          verticalAlign: 'baseline',
+          lineHeight: '1.25em',
+          fontSize: 'inherit',
+          margin: 0,
+          padding: 0,
+          border: 0,
+          borderSpacing: 0,
+          borderCollapse: 'collapse',
+          listStyle: 'none',
+          quotes: 'none',
+          content: '',
+          content: 'none',
+        },
+        body: {
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '14px',
+        },
+        'b, strong': {
+          fontWeight: 'bold',
+        },
+        'i, em': {
+          fontStyle: 'itallic',
+        },
+        'a, button': {
+          textDecoration: 'none',
+          cursor: 'pointer',
+        }
+      };
+      (new Array(6)).fill().forEach((_, i, a) => reset[`h${i + 1}`] = new Object({
+        fontSize: `${Math.round(100 * (2 - i / a.length)) / 100}em`
+      }));
+      return domstyle([reset, style]);
+    }
+  }
   if (!style) return;
-  if (window.domstyle === undefined) window.domstyle = document.head.domify({
-    content: '/* Created with domstyle */'
-  }, 'style');
   if (Array.isArray(style)) return style.forEach(s => domstyle(s));
-  window.domstyle.innerHTML += typeof style === 'string' ? style : domifyCSS(style);
+  window.domstyle.innerHTML += typeof style === 'string' ? style : domcss(style);
 }
 
 class Bind {
@@ -190,6 +231,7 @@ class Bind {
     return this._value;
   }
 }
+
 const dombind = (names, onvalue, values) => {
   if (!Array.isArray(names)) names = [names];
   if (!Array.isArray(values)) values = [values];
@@ -202,7 +244,7 @@ const dombind = (names, onvalue, values) => {
   }
 }
 
-const domloadRequest = (url, data, onsuccess = _ => null, onerror = _ => null) => {
+const domquest = (url, data, onsuccess = _ => null, onerror = _ => null) => {
   if (!url) return;
   const GET = data === false;
   if (typeof data === 'function') {
@@ -216,9 +258,10 @@ const domloadRequest = (url, data, onsuccess = _ => null, onerror = _ => null) =
   xobj.open(GET ? 'POST' : 'GET', url, true);
   xobj.send(data);
 };
+
 const domload = (url, onload, value) => {
   let obj = dombind(url, onload, value);
-  domloadRequest(url, data => data !== undefined ? obj.bind.value = data : null);
+  domquest(url, data => data !== undefined ? obj.bind.value = data : null);
   return obj;
 }
 
@@ -226,7 +269,7 @@ const dominify = (ini) => { // initializes the dom and head
   if (ini === undefined) return;
   if (typeof ini === 'boolean' || !ini.length) ini = {};
   if (typeof ini === 'string') {
-    if (ini.endsWith('.json')) return domloadRequest(ini, data => dominify(data));
+    if (ini.endsWith('.json')) return domquest(ini, data => dominify(data));
     ini = JSON.parse(ini);
   }
   const rename = (obj, name, newName) => {
@@ -253,46 +296,6 @@ const dominify = (ini) => { // initializes the dom and head
   };
   let settings = Object.assign({}, INI);
   Object.assign(settings, ini);
-  let reset = {
-    fontFace: (Array.isArray(settings.font) ? settings.font : [settings.font]).map(font => typeof font === 'string' ? new Object({
-      fontFamily: font.split(/[\/,.]+/).slice(-2)[0],
-      src: `url(${font})`
-    }) : font),
-    '*': {
-      boxSizing: 'border-box',
-      fontFamily: 'inherit',
-      fontSize: 'inherit',
-      verticalAlign: 'baseline',
-      lineHeight: '1.25em',
-      fontSize: 'inherit',
-      margin: 0,
-      padding: 0,
-      border: 0,
-      borderSpacing: 0,
-      borderCollapse: 'collapse',
-      listStyle: 'none',
-      quotes: 'none',
-      content: '',
-      content: 'none',
-    },
-    body: {
-      fontFamily: 'Arial, sans-serif',
-      fontSize: '14px',
-    },
-    'b, strong': {
-      fontWeight: 'bold',
-    },
-    'i, em': {
-      fontStyle: 'itallic',
-    },
-    'a, button': {
-      textDecoration: 'none',
-      cursor: 'pointer',
-    }
-  };
-  (new Array(6)).fill().forEach((_, i, a) => reset[`h${i + 1}`] = new Object({
-    fontSize: `${Math.round(100 * (2 - i / a.length)) / 100}em`
-  }));
   const asArray = a => Array.isArray(a) ? a : [a];
   document.head.domify({
     title: settings.title,
@@ -307,8 +310,13 @@ const dominify = (ini) => { // initializes the dom and head
       href: settings.icon
     } : undefined, ...asArray(settings.link)],
     script: asArray(settings.script)
-  }, true);
-  domstyle([settings.reset ? reset : undefined, ...asArray(settings.style)]);
+  });
+  domstyle([{
+    fontFace: (Array.isArray(settings.font) ? settings.font : [settings.font]).map(font => typeof font === 'string' ? new Object({
+      fontFamily: font.split(/[\/,.]+/).slice(-2)[0],
+      src: `url(${font})`
+    }) : font)
+  }, asArray(settings.style)]);
   Object.keys(ini).filter(key => INI[key] !== undefined).forEach(key => delete ini[key]);
   domify({
     style: ini,
