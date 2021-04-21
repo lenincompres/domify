@@ -32,6 +32,9 @@ Element.prototype.domify = Element.prototype.modify = function (structure, ...ar
       this.domify(individual, ...args);
     })
   }
+  if (TAG === 'style' && !structure.content && !IS_PRIMITIVE) {
+    structure = domifyCSS(structure);
+  }
   if (!structure.bonds && (station === 'content' && TAG !== 'meta') || station === 'innerHTML') station = 'html';
   if (!station || station === 'html') {
     if (IS_PRIMITIVE) return this.innerHTML = structure;
@@ -156,6 +159,15 @@ const domifyCSS = (sel, obj) => {
   return (css ? `\n${sel} {\n ${css}}` : '') + extra.join(' ');
 }
 
+const domstyle = style => {
+  if (!style) return;
+  if (window.domstyle === undefined) window.domstyle = document.head.domify({
+    content: '/* Created with domstyle */'
+  }, 'style');
+  if (Array.isArray(style)) return style.forEach(s => domstyle(s));
+  window.domstyle.innerHTML += typeof style === 'string' ? style : domifyCSS(style);
+}
+
 class Bind {
   constructor(val = '') {
     this._elems = [];
@@ -217,28 +229,35 @@ const dominify = (ini) => { // initializes the dom and head
     if (ini.endsWith('.json')) return domloadRequest(ini, data => dominify(data));
     ini = JSON.parse(ini);
   }
+  const rename = (obj, name, newName) => {
+    if (obj[name] === undefined) return;
+    if (Array.isArray(name)) return name.forEach((n, i) => rename(obj, n, newName[i]));
+    obj[newName] = obj[name];
+    delete obj[name];
+  }
+  rename(ini, ['fontFace', 'fontface', 'entryPoint', 'entryPoint'], ['font', 'font', 'entry', 'entry']);
   const INI = {
     title: 'A Domified Site',
     charset: 'UTF-8',
     viewport: 'width=device-width, minimum-scale=1.0, maximum-scale=1.0',
     icon: false,
     meta: [],
-    reset: true,
-    fontFace: [],
     link: [],
+    reset: true,
+    font: [],
     style: [],
     script: [],
-    entryPoint: 'main.js',
+    entry: 'main.js',
     module: true,
     postscript: []
   };
   let settings = Object.assign({}, INI);
   Object.assign(settings, ini);
   let reset = {
-    fontFace: (Array.isArray(settings.fontFace) ? settings.fontFace : [settings.fontFace]).map(fontFace => typeof fontFace === 'string' ? new Object({
-      fontFamily: fontFace.split(/[\/,.]+/).slice(-2)[0],
-      src: `url(${fontFace})`
-    }) : fontFace),
+    fontFace: (Array.isArray(settings.font) ? settings.font : [settings.font]).map(font => typeof font === 'string' ? new Object({
+      fontFamily: font.split(/[\/,.]+/).slice(-2)[0],
+      src: `url(${font})`
+    }) : font),
     '*': {
       boxSizing: 'border-box',
       fontFamily: 'inherit',
@@ -256,7 +275,7 @@ const dominify = (ini) => { // initializes the dom and head
       content: '',
       content: 'none',
     },
-    body:{
+    body: {
       fontFamily: 'Arial, sans-serif',
       fontSize: '14px',
     },
@@ -287,15 +306,15 @@ const dominify = (ini) => { // initializes the dom and head
       rel: 'icon',
       href: settings.icon
     } : undefined, ...asArray(settings.link)],
-    script: asArray(settings.script),
-    style: [settings.reset ? reset : undefined, ...asArray(settings.style)]
+    script: asArray(settings.script)
   }, true);
+  domstyle([settings.reset ? reset : undefined, ...asArray(settings.style)]);
   Object.keys(ini).filter(key => INI[key] !== undefined).forEach(key => delete ini[key]);
   domify({
     style: ini,
     script: [{
       type: settings.module ? 'module' : undefined,
-      src: settings.entryPoint
+      src: settings.entry
     }, ...asArray(settings.postscript)]
   });
 };
